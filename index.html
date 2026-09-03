@@ -18,8 +18,10 @@
     --line: #e3e4e7;
     --paper: #ffffff;
     --paper-alt: #f6f6f4;
-    --accent: #c8442b;      /* fail / bug */
-    --pass: #1f7a4d;        /* pass */
+    --accent: #0a7566;      /* mint ink — text / links */
+    --mint: #16b8a0;        /* mint — fills / borders */
+    --mint-wash: #e7f7f3;   /* mint tint background */
+    --pass: #0a7566;        /* pass */
     --maxw: 1080px;
   }
 
@@ -87,8 +89,11 @@
   .hero .tag {
     display: inline-block;
     margin-bottom: 26px;
-    padding-bottom: 4px;
-    border-bottom: 2px solid var(--accent);
+    padding: 5px 12px;
+    background: var(--mint-wash);
+    border: 1px solid var(--mint);
+    border-radius: 5px;
+    color: var(--accent);
   }
   .hero h1 {
     font-size: clamp(1.9rem, 4.6vw, 3.1rem);
@@ -114,12 +119,10 @@
     gap: 10px 34px;
     align-items: center;
   }
-  .hero .meta a {
-    text-decoration: none;
+  .hero .meta .email {
     border-bottom: 1px solid var(--ink);
     padding-bottom: 1px;
   }
-  .hero .meta a:hover { color: var(--accent); border-color: var(--accent); }
 
   /* ---------- section frame ---------- */
   section { padding: 72px 0; border-bottom: 1px solid var(--line); }
@@ -134,6 +137,7 @@
     font-weight: 700;
     letter-spacing: -0.01em;
   }
+  .sec-head .mono { color: var(--accent); }
 
   /* ---------- about ---------- */
   .about-grid {
@@ -143,9 +147,10 @@
   }
   .about-grid p { color: var(--ink-soft); }
   .edu {
-    border-left: 2px solid var(--ink);
+    border-left: 2px solid var(--mint);
     padding: 4px 0 4px 18px;
   }
+  .edu + .edu { margin-top: 22px; }
   .edu .when { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; color: var(--ink-soft); }
   .edu .what { font-weight: 600; margin-top: 4px; }
   .edu .where { color: var(--ink-soft); font-size: 0.95rem; }
@@ -153,6 +158,7 @@
   /* ---------- QA feature card ---------- */
   .report {
     border: 1px solid var(--line);
+    border-top: 3px solid var(--mint);
     border-radius: 6px;
     overflow: hidden;
     background: var(--paper);
@@ -228,8 +234,7 @@
     letter-spacing: -0.02em;
     line-height: 1.4;
   }
-  .contact .big a { text-decoration: none; border-bottom: 2px solid var(--accent); }
-  .contact .big a:hover { color: var(--accent); }
+  .contact .big .email { border-bottom: 3px solid var(--mint); }
 
   footer {
     padding: 28px 0 48px;
@@ -277,7 +282,7 @@
       </p>
       <div class="meta">
         <span class="mono">2021 – 현재 · 유한대학교</span>
-        <a href="mailto:sudaengipyochang@gmail.com">sudaengipyochang@gmail.com</a>
+        <span class="email">sudaengipyochang@gmail.com</span>
       </div>
     </div>
   </section>
@@ -300,10 +305,17 @@
             테스트하는 사람과 만드는 사람의 언어를 모두 쓸 수 있는 엔지니어를 지향합니다.
           </p>
         </div>
-        <div class="edu">
-          <div class="when">2021.03 – 현재</div>
-          <div class="what">유한대학교</div>
-          <div class="where">게임콘텐츠전공 (전문학사) · 재학</div>
+        <div>
+          <div class="edu">
+            <div class="when">2021.03 – 현재</div>
+            <div class="what">유한대학교</div>
+            <div class="where">게임콘텐츠전공 (전문학사) · 재학</div>
+          </div>
+          <div class="edu">
+            <div class="when">2018.03 – 2020.12</div>
+            <div class="what">작전고등학교</div>
+            <div class="where">졸업</div>
+          </div>
         </div>
       </div>
     </div>
@@ -405,7 +417,7 @@
       </div>
       <p class="big">
         버그 리포트든 제안이든,<br>
-        <a href="mailto:sudaengipyochang@gmail.com">sudaengipyochang@gmail.com</a> 으로 보내주세요.
+        <span class="email">sudaengipyochang@gmail.com</span> 으로 보내주세요.
       </p>
     </div>
   </section>
