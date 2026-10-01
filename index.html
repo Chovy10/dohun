@@ -226,6 +226,110 @@
   }
   .chip.live { color: var(--pass); border-color: var(--pass); }
 
+  /* ---------- work tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    box-shadow: inset 0 -1px 0 var(--line);
+    margin-bottom: 36px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .tab {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .tab .mono { margin-right: 8px; font-size: 0.7rem; }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--mint); }
+  .tab[aria-selected="true"] .mono { color: var(--accent); }
+  .tab:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+
+  .panel[hidden] { display: none; }
+  .panel { animation: fade .2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .panel-intro { color: var(--ink-soft); max-width: 62ch; }
+  .panel-intro strong { color: var(--ink); }
+  .stats { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .stat {
+    padding: 14px 20px;
+    background: var(--paper-alt);
+    border-left: 3px solid var(--mint);
+    border-radius: 4px;
+  }
+  .stat b { display: block; font-size: 1.4rem; line-height: 1.3; }
+  .stat span { font-size: 0.85rem; color: var(--ink-soft); }
+
+  .doc h3 {
+    margin-top: 44px;
+    font-size: 1.12rem;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .doc h3 .mono { color: var(--accent); font-size: 0.72rem; }
+  .doc h4 { margin-top: 24px; font-size: 1rem; font-weight: 600; }
+  .doc p, .doc li { color: var(--ink-soft); }
+  .doc p { margin-top: 12px; }
+  .doc ul, .doc ol { margin-top: 12px; padding-left: 20px; }
+  .doc li { margin-bottom: 6px; }
+  .doc li ul { margin-top: 6px; }
+  .doc strong { color: var(--ink); font-weight: 600; }
+  .doc code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    background: var(--mint-wash);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  .tbl-wrap { margin-top: 16px; overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+  .tbl-wrap table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .tbl-wrap th {
+    text-align: left;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--paper-alt);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .tbl-wrap td { padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+  .tbl-wrap tr:first-child td { border-top: none; }
+  .tbl-wrap td.k { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .tbl-wrap td.c { text-align: center; white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 0.84rem; }
+  .tbl-wrap td.d { white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 0.84rem; }
+  .tbl-wrap tr.total td { background: var(--mint-wash); color: var(--ink); font-weight: 700; }
+  .play-table td:nth-child(4) { min-width: 300px; }
+  .badge { display: inline-block; font-size: 0.78rem; color: var(--accent); background: var(--mint-wash); padding: 1px 8px; border-radius: 3px; white-space: nowrap; }
+
+  .doc-cover {
+    padding: 26px 24px;
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--mint);
+    border-radius: 6px;
+    background: var(--paper-alt);
+  }
+  .doc-cover h3 { margin-top: 6px; font-size: 1.35rem; }
+  .doc-cover .sub { margin-top: 4px; color: var(--accent); font-weight: 500; }
+  .doc-cover .mono { font-size: 0.72rem; }
+  .note-small { margin-top: 10px; font-size: 0.85rem; }
+
   /* ---------- contact ---------- */
   .contact { border-bottom: none; }
   .contact .big {
@@ -254,6 +358,7 @@
     .report .rmeta { grid-template-columns: 1fr 1fr; }
     .proj { grid-template-columns: 1fr; gap: 8px; }
     .proj .period { padding-top: 0; }
+    .tab { padding: 12px 12px; }
   }
 </style>
 </head>
@@ -266,6 +371,7 @@
       <a href="#about">소개</a>
       <a href="#qa">QA 경험</a>
       <a href="#projects">개발 프로젝트</a>
+      <a href="#work">분석 · 기획</a>
       <a href="#contact">연락처</a>
     </nav>
   </div>
@@ -409,10 +515,216 @@
     </div>
   </section>
 
-  <section class="contact" id="contact">
+  <section id="work">
     <div class="wrap">
       <div class="sec-head">
         <span class="mono">04</span>
+        <h2>게임 분석 · 기획</h2>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="게임 분석 · 기획 문서">
+        <button class="tab" role="tab" id="tab-play" aria-controls="panel-play" aria-selected="true"><span class="mono">A</span>게임 플레이 이력</button>
+        <button class="tab" role="tab" id="tab-event" aria-controls="panel-event" aria-selected="false" tabindex="-1"><span class="mono">B</span>이벤트 기획서</button>
+      </div>
+
+      <!-- ===== A. 게임 플레이 이력 ===== -->
+      <div class="panel doc" role="tabpanel" id="panel-play" aria-labelledby="tab-play">
+        <p class="panel-intro">
+          모바일 매출 순위 상위권 게임을 매일 하나씩 직접 플레이하고, <strong>어디까지 진행했는지</strong>와
+          <strong>순위 흐름</strong>을 함께 기록했습니다.
+        </p>
+        <div class="stats">
+          <div class="stat"><b>14일</b><span>9/10 – 9/23</span></div>
+          <div class="stat"><b>14종</b><span>플레이한 게임</span></div>
+          <div class="stat"><b>39시간</b><span>총 플레이 (하루 1–5시간)</span></div>
+        </div>
+
+        <h3><span class="mono">01</span>플레이 기록</h3>
+        <div class="tbl-wrap">
+          <table class="play-table">
+            <thead>
+              <tr><th>날짜</th><th>게임</th><th>시간</th><th>진행 상황 (어디까지)</th><th>비고</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="d">9/10</td><td class="k">제우스: 오만의 신</td><td class="c">4h</td><td>Lv.45 전후 · 메인 퀘스트 초반 챕터 완료, 클래스 특화·탈것 등 성장 시스템 순차 해금</td><td></td></tr>
+              <tr><td class="d">9/11</td><td class="k">리니지M</td><td class="c">2h</td><td>Lv.35~40 · 튜토리얼 마을 퀘스트 완료, 기본 장비 세팅</td><td></td></tr>
+              <tr><td class="d">9/12</td><td class="k">SOL: enchant</td><td class="c">1h</td><td>Lv.20 전후 · 튜토리얼 및 메인 스토리 1챕터</td><td></td></tr>
+              <tr><td class="d">9/13</td><td class="k">WOS: 화이트아웃 서바이벌</td><td class="c">5h</td><td>용광로 Lv.13~15 · 챕터 퀘스트 진행, 영웅 모집·연맹 가입, 연구 시작</td><td></td></tr>
+              <tr><td class="d">9/14</td><td class="k">킹샷: Kingshot</td><td class="c">2h</td><td>성(타운센터) Lv.7~8 · 초반 퀘스트 진행, 연맹 가입</td><td></td></tr>
+              <tr><td class="d">9/15</td><td class="k">오딘: 발할라 라이징</td><td class="c">3h</td><td>Lv.40 전후 · 미드가르드 메인 퀘스트 진행, 기본 장비·탈것 획득</td><td></td></tr>
+              <tr><td class="d">9/16</td><td class="k">메이플 키우기</td><td class="c">1h</td><td>챕터 1 스테이지 진행 · 1차 전직 완료</td><td></td></tr>
+              <tr><td class="d">9/17</td><td class="k">이클립스: 더 어웨이크닝</td><td class="c">5h</td><td>Lv.40~45 · 메인 퀘스트 위주 진행, 희귀 등급 장비 세팅, 성소(방치 보상) 해금</td><td><span class="badge">Google · App Store 공동 1위</span></td></tr>
+              <tr><td class="d">9/18</td><td class="k">로블록스 (Roblox)</td><td class="c">2h</td><td>인기 체험(게임) 2~3개 플레이 · 계정 생성·아바타 꾸미기</td><td></td></tr>
+              <tr><td class="d">9/19</td><td class="k">가십하버: 합성 &amp; 스토리 게임</td><td class="c">1h</td><td>레벨 5~8 · 스토리 챕터 1, 초반 구역 복구</td><td></td></tr>
+              <tr><td class="d">9/20</td><td class="k">로얄 매치 (Royal Match)</td><td class="c">2h</td><td>레벨 60~70 · 성 구역 2~3개 복원</td><td></td></tr>
+              <tr><td class="d">9/21</td><td class="k">운빨존많겜</td><td class="c">4h</td><td>일반 난이도 스테이지 다수 클리어 · 신화 유닛 2~3종 조합</td><td><span class="badge">순위 15위 → 11위</span></td></tr>
+              <tr><td class="d">9/22</td><td class="k">라스트 워: 서바이벌</td><td class="c">3h</td><td>본부(HQ) Lv.7~9 · 맵 좀비 처치, 연구소 연구 시작</td><td></td></tr>
+              <tr><td class="d">9/23</td><td class="k">열혈강호: 넥스트</td><td class="c">4h</td><td>Lv.35 도달 · 1차 전직(Lv.10) 완료, 2차 전직·정사파 선택</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="mono">02</span>순위 스냅샷 분석</h3>
+
+        <h4>상위권 (1~12위)</h4>
+        <ul>
+          <li><strong>신규 1위 등극:</strong> 이클립스: 더 어웨이크닝(Smilegate)이 양 스토어 모두 1위. 9/3 스냅샷에는 등장하지 않았던 신작</li>
+          <li><strong>양 스토어 공통 톱3:</strong> 이클립스: 더 어웨이크닝 · 제우스: 오만의 신 · 리니지M — 순서까지 동일</li>
+          <li><strong>NEXON:</strong> 구글 6위 메이플 키우기, 앱스토어에는 4위 메이플 키우기·9위 FC Online M·12위 마비노기 모바일까지 3종 진입</li>
+          <li><strong>운빨존많겜(111%):</strong> 구글 11위 → 앱스토어 5위로 앱스토어에서 더 강세</li>
+          <li><strong>Century Games:</strong> WOS·킹샷 두 종 모두 양 스토어 진입 유지 (9/3 스냅샷과 동일한 흐름)</li>
+        </ul>
+
+        <h4>13~24위권</h4>
+        <ul>
+          <li>합성·스토리 장르(테이스티 트레블·씨사이드 익스케이프·Gardenscapes/Homescapes)와 방치형 서바이벌(라스트 워·라스트 Z·라스트 어사일럼)이 다수 포진</li>
+          <li><strong>쿠키런 키우기 - 쿠키런: 크럼블(Devsisters):</strong> 양 스토어 동일하게 19위로 진입</li>
+          <li><strong>협타디: 협동 타워 디펜스(Supermagic):</strong> 구글 17위 · 앱스토어 22위로 양 스토어 진입</li>
+        </ul>
+
+        <h4>25~36위권</h4>
+        <ul>
+          <li>아쿠아랜드: 크레이지 서바이벌(구글 29위·앱스토어 31위), 할리우드 머지(구글 28위·앱스토어 27위), 오딘·SOL: enchant도 순위만 바뀐 채 양 스토어 재등장</li>
+          <li><strong>NC:</strong> 앱스토어에 AION2(32위) 신규 진입, 구글은 리니지W(36위) 진입으로 서로 다른 라인업 노출</li>
+          <li>KRAFTON 배틀그라운드(앱스토어 33위)·JOYCITY 임진왜란: 조선의 반격(앱스토어 29위) 신규 관찰</li>
+        </ul>
+
+        <h4>37~46위권</h4>
+        <ul>
+          <li>합성·타운 시뮬레이션(미스터리 타운·꿈의 마을·꿈의 집)과 방치형 키우기(스톤에이지 키우기·캣 히어로·총잡이 고양이)가 다수, 캐주얼 구작(캔디크러쉬사가·브롤스타즈)도 하위권에서 재등장</li>
+          <li><strong>Netmarble:</strong> 구글 37위 뱀피르, 앱스토어에는 37위 뱀피르 외 40위 스톤에이지 키우기까지 2종 노출</li>
+          <li><strong>Playrix:</strong> 41위 꿈의 마을, 46위 꿈의 집(구글)까지 겹치며 시뮬레이션 라인업 강세 지속</li>
+          <li>앱스토어 38위 "리니지M(12)"는 9/3 스냅샷과 동일하게 동명 앱 구분 표기 (리니지M 자체를 가리킴)</li>
+        </ul>
+
+        <h3><span class="mono">03</span>메모</h3>
+        <ul>
+          <li><strong>양 스토어 공통 톱2:</strong> 리니지M · 제우스: 오만의 신 (구글은 제우스 1위, 앱스토어는 리니지M 1위)</li>
+          <li><strong>Com2uS:</strong> 앱스토어 톱3에 제우스·컴투스프로야구V26 동시 진입</li>
+          <li><strong>Century Games:</strong> 두 스토어 모두에 WOS·킹샷·테이스티 트레블 다수 진입</li>
+          <li><strong>NEXON:</strong> 앱스토어 톱10에 3종(메이플 키우기·FC Online M·FC 모바일), 톱22엔 마비노기 모바일 포함 5종</li>
+          <li><strong>Microfun Limited:</strong> 합성·스토리 장르(가십하버·씨사이드 익스케이프)로 양 스토어 진입</li>
+          <li>앱스토어 17위 "리니지M(12)"는 동명 앱 구분 표기로, 리니지M을 가리킴</li>
+          <li><strong>23~34위권 특징:</strong> 포커/홀덤류(피망 포커·한게임 로얄홀덤), 방치형 키우기(오피스 퀸 키우기), 서바이벌 슈터(라스트 Z·뚜까펫)가 다수</li>
+          <li>앱스토어 24위 배틀그라운드(KRAFTON), 26위 명일방주: 엔드필드 신규 진입 눈에 띔</li>
+          <li><strong>35~45위권:</strong> 서브컬처 RPG(소녀전선2·트릭컬 리바이브·붕괴: 스타레일·에픽세븐·승리의 여신 니케), 매치3 캐주얼(캔디크러쉬사가·Homescapes), 웹젠·스마일게이트·엔씨 구작(뮤 모나크2·에픽세븐·리니지W)이 하위권에 포진</li>
+        </ul>
+      </div>
+
+      <!-- ===== B. 이벤트 기획서 ===== -->
+      <div class="panel doc" role="tabpanel" id="panel-event" aria-labelledby="tab-event" hidden>
+        <div class="doc-cover">
+          <span class="mono">Event Proposal · 2026-09-17</span>
+          <h3>메이플랜드 이벤트 기획서 — 겨울에 그시절 추억</h3>
+          <div class="sub">트렌드 코리아 2026 '근본이즘' 기반</div>
+        </div>
+
+        <h3><span class="mono">01</span>트렌드 선정 배경</h3>
+        <p>『트렌드 코리아 2026』은 2026년 '붉은 말의 해'를 맞아 10대 키워드를 <strong>"HORSE POWER"</strong>로 제시했다. 이 중 이번 이벤트는 <strong>근본이즘</strong>을 채택한다.</p>
+        <ul>
+          <li><strong>정의:</strong> 유행을 좇기보다 본질·기본기로 회귀하려는 소비·문화 흐름. 화려한 신제품보다 '원조'와 '초심'의 가치가 재조명된다.</li>
+          <li><strong>선정 이유:</strong> 넥슨의 메이플스토리 월드 내 클래식 서버 <strong>메이플랜드</strong>는 2003년 빅뱅 업데이트 이전의 초창기 메이플스토리를 지형부터 UI까지 최대한 그대로 재현한 서버로, '원조로 돌아가자'는 근본이즘을 게임으로 가장 직접적으로 구현한 사례다.</li>
+        </ul>
+
+        <h3><span class="mono">02</span>선정 게임: 메이플랜드 (메이플스토리 월드 클래식 서버)</h3>
+        <ul>
+          <li><strong>소개:</strong> 메이플스토리 월드(넥슨의 UGC 플랫폼) 내 서버로, 빅뱅 이전 메이플스토리를 순정 그대로 복원한 것이 특징. 초창기 헤네시스·페리온·개미굴 등 원년 콘텐츠를 그대로 즐길 수 있다.</li>
+          <li><strong>매칭 포인트:</strong> 새로운 콘텐츠 대신 20년 전 원작 그대로의 사냥터·시스템·UI를 재현했다는 점에서, 유행보다 본질로 돌아가자는 근본이즘과 정확히 맞닿아 있다.</li>
+          <li><strong>진행 방식 특징:</strong> 별도의 외부 플랫폼(디스코드 등) 없이, 게임 내 채팅·귓속말 시스템만으로 접수부터 마무리까지 전 과정을 인게임에서 완결한다.</li>
+        </ul>
+
+        <h3><span class="mono">03</span>이벤트 컨셉: 겨울에 그시절 추억</h3>
+        <p>원작 메이플스토리의 크리스마스 이벤트 <strong>"행복한 마을"</strong>과 비슷한 형태로, 눈 내리는 겨울 시즌에 그 시절 추억을 되살리는 컨셉이다. 입장-사냥-교환-꾸미기로 이어지는 원작의 진행 구조를 참고해 이벤트 전용 맵 <strong>'그 시절 마을'</strong>을 만든다.</p>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>단계</th><th>내용</th></tr></thead>
+            <tbody>
+              <tr><td class="k">① 입장</td><td>헤네시스 사슴상 앞 NPC역 GM <strong>'문지기'</strong>에게 메소를 내면 이벤트 전용 맵 <strong>'그 시절 마을'</strong>로 이동</td></tr>
+              <tr><td class="k">② 사냥</td><td>'그 시절 마을'에서 지정 몬스터를 사냥해 전용 드랍 아이템 획득</td></tr>
+              <tr><td class="k">③ 교환</td><td>획득한 아이템을 NPC역 GM <strong>'교환상인'</strong>에게 전달하면 장비 또는 꾸미기 재료로 교환</td></tr>
+              <tr><td class="k">④ 꾸미기</td><td>꾸미기 재료를 '그 시절 마을' 광장 안내 GM에게 전달하면 즉시 광장에 설치되어 마을이 채워짐</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>참가자가 사냥 → 교환 → 꾸미기를 반복할수록 마을 광장이 점점 채워지는 것을 실시간으로 볼 수 있는 구조다.</p>
+
+        <h3><span class="mono">04</span>이벤트 개요</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>항목</th><th>내용</th></tr></thead>
+            <tbody>
+              <tr><td class="k">이벤트명</td><td>겨울에 그시절 추억</td></tr>
+              <tr><td class="k">목적</td><td>입장료-사냥-교환-꾸미기 구조로 참가자 모두가 함께 마을을 완성해가는 체험 제공</td></tr>
+              <tr><td class="k">대상</td><td>20~30대(메이플스토리 원년 이용 경험층) 및 신규 체험 희망자</td></tr>
+              <tr><td class="k">일시</td><td>토요일 오후 2시~6시 (약 4시간)</td></tr>
+              <tr><td class="k">장소</td><td>헤네시스 사슴상 앞(입장 접수) → 이벤트 전용 맵 '그 시절 마을'(사냥·교환·꾸미기)</td></tr>
+              <tr><td class="k">참여 방법</td><td>사슴상 앞 '문지기' 역 GM에게 메소 입장료 제출 후 '그 시절 마을' 입장, 이후 자유 반복 참여</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="mono">05</span>진행 방식 및 타임라인 (전 과정 인게임 진행)</h3>
+        <ol>
+          <li><strong>사전 준비 (D-14 ~ D-1)</strong>
+            <ul>
+              <li>메이플랜드 설치·접속 가이드 사전 공지(SNS/커뮤니티)</li>
+              <li>진행 캐릭터(GM역) 3개 생성: 입장 접수용(문지기 역), 아이템 교환용(교환상인 역), 꾸미기 설치·안내용</li>
+              <li>이벤트 전용 맵으로 쓸 필드 지정, 지정 몬스터 및 드랍 아이템 확정</li>
+              <li>교환 가능한 장비/꾸미기 재료 목록과 필요 개수 확정</li>
+            </ul>
+          </li>
+          <li><strong>당일 진행 (14:00~18:00, 자유 반복 참여)</strong>
+            <ul>
+              <li>14:00 사슴상 앞 집결, 오리엔테이션(입장-사냥-교환-꾸미기 흐름 안내)</li>
+              <li>14:15 '문지기' 역 GM에게 메소 입장료 제출 후 '그 시절 마을' 입장</li>
+              <li>14:15~16:30 <strong>자유 사냥·교환 시간:</strong> 지정 몬스터 사냥 → '교환상인' 역 GM에게 아이템 전달 → 장비 또는 꾸미기 재료 수령 → 꾸미기 재료는 광장 안내 GM에게 즉시 전달해 마을에 설치</li>
+              <li>16:30~17:00 완성된 마을 광장 감상 및 기념 촬영</li>
+              <li>17:00~17:30 마무리 인사 및 소감 나누기</li>
+            </ul>
+          </li>
+          <li><strong>마무리</strong>
+            <ul>
+              <li>참가 경품은 인게임 우편(메소·아이템)으로 즉시 지급</li>
+              <li>완성된 마을 사진은 사후 SNS 카드뉴스로 별도 제작·업로드</li>
+            </ul>
+          </li>
+        </ol>
+
+        <h3><span class="mono">06</span>예산 및 자원</h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>항목</th><th>내용</th><th>예상 비용</th></tr></thead>
+            <tbody>
+              <tr><td class="k">사냥 교환용 장비 아이템</td><td>참가자 교환용 장비 확보</td><td class="c">35만원</td></tr>
+              <tr><td class="k">꾸미기용 설치 재료</td><td>광장 장식용 아이템</td><td class="c">20만원</td></tr>
+              <tr><td class="k">경품(인게임 메소·아이템)</td><td>전체 참가 아이템</td><td class="c">20만원</td></tr>
+              <tr><td class="k">진행 인력</td><td>문지기 역 1명 + 교환상인 역 1명 + 꾸미기·안내역 1명</td><td class="c">40만원</td></tr>
+              <tr><td class="k">홍보물</td><td>사전 안내 카드뉴스, SNS 광고</td><td class="c">15만원</td></tr>
+              <tr class="total"><td>합계</td><td></td><td class="c">약 130만원</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="note-small">입장료로 걷힌 메소는 경품 재원 일부로 재활용 가능</p>
+
+        <h3><span class="mono">07</span>기대 효과 및 홍보 전략</h3>
+        <ul>
+          <li><strong>기대 효과:</strong> 참가자가 사냥할수록 마을이 실제로 채워지는 것을 눈으로 확인할 수 있어 개인의 참여가 공동의 결과물로 이어지는 성취감을 준다. 원작 '행복한 마을'과 비슷한 겨울 감성으로 향수를 자연스럽게 자극한다.</li>
+          <li><strong>홍보 전략:</strong>
+            <ul>
+              <li>사전 티저: "그 시절 겨울, 그 마을이 돌아온다" 컨셉의 카드뉴스 배포</li>
+              <li>실시간 인증: 채워져 가는 마을 광장 모습을 커뮤니티에 실시간 공유</li>
+              <li>해시태그 챌린지: <code>#메이플랜드그시절마을</code> <code>#근본이즘</code> 해시태그로 참여 후기 확산</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono">05</span>
         <h2>연락처</h2>
       </div>
       <p class="big">
@@ -429,6 +741,30 @@
     <a href="#top" style="text-decoration:none;">맨 위로 ↑</a>
   </div>
 </footer>
+
+<script>
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    function select(tab) {
+      tabs.forEach(function (t) {
+        var on = t === tab;
+        t.setAttribute('aria-selected', on);
+        t.tabIndex = on ? 0 : -1;
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !on;
+      });
+    }
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener('click', function () { select(tab); });
+      tab.addEventListener('keydown', function (e) {
+        var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!d) return;
+        var next = tabs[(i + d + tabs.length) % tabs.length];
+        select(next);
+        next.focus();
+      });
+    });
+  })();
+</script>
 
 </body>
 </html>
