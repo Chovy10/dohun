@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gamePlay — 신도훈</title>
+<meta name="description" content="모바일 매출 순위 상위권 게임 14종을 직접 플레이한 기록과 순위 스냅샷 분석.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #16181d;
+    --ink-soft: #4b4f57;
+    --line: #e3e4e7;
+    --paper: #ffffff;
+    --paper-alt: #f6f6f4;
+    --accent: #0a7566;      /* mint ink — text / links */
+    --mint: #16b8a0;        /* mint — fills / borders */
+    --mint-wash: #e7f7f3;   /* mint tint background */
+    --pass: #0a7566;        /* pass */
+    --maxw: 1080px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: "IBM Plex Sans KR", system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- header ---------- */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: saturate(180%) blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 16px 28px;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    gap: 16px;
+  }
+  .bar .name { font-weight: 700; letter-spacing: -0.01em; }
+  .bar nav { display: flex; gap: 22px; }
+  .bar nav a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    transition: color .15s;
+  }
+  .bar nav a:hover { color: var(--ink); }
+
+  /* ---------- hero ---------- */
+  .hero {
+    padding: 96px 0 72px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero .tag {
+    display: inline-block;
+    margin-bottom: 26px;
+    padding: 5px 12px;
+    background: var(--mint-wash);
+    border: 1px solid var(--mint);
+    border-radius: 5px;
+    color: var(--accent);
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.6vw, 3.1rem);
+    font-weight: 700;
+    line-height: 1.32;
+    letter-spacing: -0.02em;
+    max-width: 20ch;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .hero .lede {
+    margin-top: 28px;
+    max-width: 54ch;
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+  }
+  .hero .meta {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 34px;
+    align-items: center;
+  }
+  .hero .meta .email {
+    border-bottom: 1px solid var(--ink);
+    padding-bottom: 1px;
+  }
+
+  /* ---------- section frame ---------- */
+  section { padding: 72px 0; border-bottom: 1px solid var(--line); }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .sec-head h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .sec-head .mono { color: var(--accent); }
+
+  /* ---------- about ---------- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 48px;
+  }
+  .about-grid p { color: var(--ink-soft); }
+  .edu {
+    border-left: 2px solid var(--mint);
+    padding: 4px 0 4px 18px;
+  }
+  .edu + .edu { margin-top: 22px; }
+  .edu .when { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; color: var(--ink-soft); }
+  .edu .what { font-weight: 600; margin-top: 4px; }
+  .edu .where { color: var(--ink-soft); font-size: 0.95rem; }
+
+  /* ---------- QA feature card ---------- */
+  .report {
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--mint);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .report .rhead {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 22px;
+    background: var(--paper-alt);
+    border-bottom: 1px solid var(--line);
+  }
+  .report .rhead .id { font-family: "IBM Plex Mono", monospace; font-size: 0.8rem; color: var(--ink-soft); }
+  .status {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    border: 1px solid currentColor;
+  }
+  .status.open { color: var(--accent); }
+  .status.done { color: var(--pass); }
+  .report .rbody { padding: 26px 22px 30px; }
+  .report h3 { font-size: 1.15rem; font-weight: 700; }
+  .report .rmeta {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    border-top: 1px dashed var(--line);
+    border-bottom: 1px dashed var(--line);
+    padding: 16px 0;
+  }
+  .report .rmeta dt { font-family: "IBM Plex Mono", monospace; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+  .report .rmeta dd { margin-top: 4px; font-size: 0.95rem; font-weight: 500; }
+  .report ul { margin-top: 18px; padding-left: 18px; color: var(--ink-soft); }
+  .report ul li { margin-bottom: 6px; }
+
+  /* ---------- projects timeline ---------- */
+  .timeline { display: flex; flex-direction: column; }
+  .proj {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 28px;
+    padding: 26px 0;
+    border-top: 1px solid var(--line);
+  }
+  .proj:last-child { border-bottom: 1px solid var(--line); }
+  .proj .period { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; color: var(--ink-soft); padding-top: 3px; }
+  .proj h3 { font-size: 1.12rem; font-weight: 700; }
+  .proj .role { margin-top: 6px; color: var(--ink-soft); font-size: 0.95rem; }
+  .proj .note { margin-top: 12px; color: var(--ink-soft); }
+  .chips { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--ink-soft);
+  }
+  .chip.live { color: var(--pass); border-color: var(--pass); }
+
+  /* ---------- work tabs ---------- */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    box-shadow: inset 0 -1px 0 var(--line);
+    margin-bottom: 36px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .tab {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 18px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--ink-soft);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color .15s, border-color .15s;
+  }
+  .tab .mono { margin-right: 8px; font-size: 0.7rem; }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--mint); }
+  .tab[aria-selected="true"] .mono { color: var(--accent); }
+  .tab:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+
+  .panel[hidden] { display: none; }
+  .panel { animation: fade .2s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  .panel-intro { color: var(--ink-soft); max-width: 62ch; }
+  .panel-intro strong { color: var(--ink); }
+  .stats { margin-top: 24px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .stat {
+    padding: 14px 20px;
+    background: var(--paper-alt);
+    border-left: 3px solid var(--mint);
+    border-radius: 4px;
+  }
+  .stat b { display: block; font-size: 1.4rem; line-height: 1.3; }
+  .stat span { font-size: 0.85rem; color: var(--ink-soft); }
+
+  .doc h3 {
+    margin-top: 44px;
+    font-size: 1.12rem;
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .doc h3 .mono { color: var(--accent); font-size: 0.72rem; }
+  .doc h4 { margin-top: 24px; font-size: 1rem; font-weight: 600; }
+  .doc p, .doc li { color: var(--ink-soft); }
+  .doc p { margin-top: 12px; }
+  .doc ul, .doc ol { margin-top: 12px; padding-left: 20px; }
+  .doc li { margin-bottom: 6px; }
+  .doc li ul { margin-top: 6px; }
+  .doc strong { color: var(--ink); font-weight: 600; }
+  .doc code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    background: var(--mint-wash);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+  }
+
+  .tbl-wrap { margin-top: 16px; overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; }
+  .tbl-wrap table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .tbl-wrap th {
+    text-align: left;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--paper-alt);
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .tbl-wrap td { padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; color: var(--ink-soft); }
+  .tbl-wrap tr:first-child td { border-top: none; }
+  .tbl-wrap td.k { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .tbl-wrap td.c { text-align: center; white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 0.84rem; }
+  .tbl-wrap td.d { white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 0.84rem; }
+  .tbl-wrap tr.total td { background: var(--mint-wash); color: var(--ink); font-weight: 700; }
+  .play-table td:nth-child(4) { min-width: 300px; }
+  .badge { display: inline-block; font-size: 0.78rem; color: var(--accent); background: var(--mint-wash); padding: 1px 8px; border-radius: 3px; white-space: nowrap; }
+
+  .doc-cover {
+    padding: 26px 24px;
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--mint);
+    border-radius: 6px;
+    background: var(--paper-alt);
+  }
+  .doc-cover h3 { margin-top: 6px; font-size: 1.35rem; }
+  .doc-cover .sub { margin-top: 4px; color: var(--accent); font-weight: 500; }
+  .doc-cover .mono { font-size: 0.72rem; }
+  .note-small { margin-top: 10px; font-size: 0.85rem; }
+
+  /* ---------- contact ---------- */
+  .contact { border-bottom: none; }
+  .contact .big {
+    font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.4;
+  }
+  .contact .big .email { border-bottom: 3px solid var(--mint); }
+
+  footer {
+    padding: 28px 0 48px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 720px) {
+    .bar nav { display: none; }
+    .hero { padding: 64px 0 48px; }
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .report .rmeta { grid-template-columns: 1fr 1fr; }
+    .proj { grid-template-columns: 1fr; gap: 8px; }
+    .proj .period { padding-top: 0; }
+    .tab { padding: 12px 12px; }
+  }
+
+  /* ---------- sub pages ---------- */
+  .bar .name { text-decoration: none; }
+  .bar nav a.on { color: var(--accent); font-weight: 600; }
+  .page-hero { padding: 72px 0 48px; border-bottom: 1px solid var(--line); }
+  .page-hero .tag {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 5px 12px;
+    background: var(--mint-wash);
+    border: 1px solid var(--mint);
+    border-radius: 5px;
+    color: var(--accent);
+  }
+  .page-hero h1 { font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.35; }
+  .page-hero p { margin-top: 16px; max-width: 58ch; color: var(--ink-soft); }
+  @media (max-width: 720px) {
+    .bar nav { display: flex; gap: 14px; }
+    .bar nav a.hide-sm { display: none; }
+    .page-hero { padding: 48px 0 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a class="name" href="index.html">신도훈</a>
+    <nav>
+      <a href="index.html" class="hide-sm">홈</a>
+      <a href="study.html">study</a>
+      <a href="gamePlay.html" class="on" aria-current="page">gamePlay</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero" id="top">
+    <div class="wrap">
+      <span class="tag mono">gamePlay</span>
+      <h1>게임 플레이 이력</h1>
+      <p>매출 순위 상위권 게임을 하루에 하나씩 직접 플레이하며 진행도와 순위 흐름을 기록했습니다.</p>
+    </div>
+  </section>
+
+  <section style="border-bottom:none;">
+    <div class="wrap doc">
+      <div class="stats">
+        <div class="stat"><b>14일</b><span>9/10 – 9/23</span></div>
+        <div class="stat"><b>14종</b><span>플레이한 게임</span></div>
+        <div class="stat"><b>39시간</b><span>총 플레이 (하루 1–5시간)</span></div>
+      </div>
+
+      <h3><span class="mono">01</span>플레이 기록</h3>
+      <div class="tbl-wrap">
+        <table class="play-table">
+          <thead>
+            <tr><th>날짜</th><th>게임</th><th>시간</th><th>진행 상황 (어디까지)</th><th>비고</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="d">9/10</td><td class="k">제우스: 오만의 신</td><td class="c">4h</td><td>Lv.45 전후 · 메인 퀘스트 초반 챕터 완료, 클래스 특화·탈것 등 성장 시스템 순차 해금</td><td></td></tr>
+            <tr><td class="d">9/11</td><td class="k">리니지M</td><td class="c">2h</td><td>Lv.35~40 · 튜토리얼 마을 퀘스트 완료, 기본 장비 세팅</td><td></td></tr>
+            <tr><td class="d">9/12</td><td class="k">SOL: enchant</td><td class="c">1h</td><td>Lv.20 전후 · 튜토리얼 및 메인 스토리 1챕터</td><td></td></tr>
+            <tr><td class="d">9/13</td><td class="k">WOS: 화이트아웃 서바이벌</td><td class="c">5h</td><td>용광로 Lv.13~15 · 챕터 퀘스트 진행, 영웅 모집·연맹 가입, 연구 시작</td><td></td></tr>
+            <tr><td class="d">9/14</td><td class="k">킹샷: Kingshot</td><td class="c">2h</td><td>성(타운센터) Lv.7~8 · 초반 퀘스트 진행, 연맹 가입</td><td></td></tr>
+            <tr><td class="d">9/15</td><td class="k">오딘: 발할라 라이징</td><td class="c">3h</td><td>Lv.40 전후 · 미드가르드 메인 퀘스트 진행, 기본 장비·탈것 획득</td><td></td></tr>
+            <tr><td class="d">9/16</td><td class="k">메이플 키우기</td><td class="c">1h</td><td>챕터 1 스테이지 진행 · 1차 전직 완료</td><td></td></tr>
+            <tr><td class="d">9/17</td><td class="k">이클립스: 더 어웨이크닝</td><td class="c">5h</td><td>Lv.40~45 · 메인 퀘스트 위주 진행, 희귀 등급 장비 세팅, 성소(방치 보상) 해금</td><td><span class="badge">Google · App Store 공동 1위</span></td></tr>
+            <tr><td class="d">9/18</td><td class="k">로블록스 (Roblox)</td><td class="c">2h</td><td>인기 체험(게임) 2~3개 플레이 · 계정 생성·아바타 꾸미기</td><td></td></tr>
+            <tr><td class="d">9/19</td><td class="k">가십하버: 합성 &amp; 스토리 게임</td><td class="c">1h</td><td>레벨 5~8 · 스토리 챕터 1, 초반 구역 복구</td><td></td></tr>
+            <tr><td class="d">9/20</td><td class="k">로얄 매치 (Royal Match)</td><td class="c">2h</td><td>레벨 60~70 · 성 구역 2~3개 복원</td><td></td></tr>
+            <tr><td class="d">9/21</td><td class="k">운빨존많겜</td><td class="c">4h</td><td>일반 난이도 스테이지 다수 클리어 · 신화 유닛 2~3종 조합</td><td><span class="badge">순위 15위 → 11위</span></td></tr>
+            <tr><td class="d">9/22</td><td class="k">라스트 워: 서바이벌</td><td class="c">3h</td><td>본부(HQ) Lv.7~9 · 맵 좀비 처치, 연구소 연구 시작</td><td></td></tr>
+            <tr><td class="d">9/23</td><td class="k">열혈강호: 넥스트</td><td class="c">4h</td><td>Lv.35 도달 · 1차 전직(Lv.10) 완료, 2차 전직·정사파 선택</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3><span class="mono">02</span>순위 스냅샷 분석</h3>
+
+      <h4>상위권 (1~12위)</h4>
+      <ul>
+        <li><strong>신규 1위 등극:</strong> 이클립스: 더 어웨이크닝(Smilegate)이 양 스토어 모두 1위. 9/3 스냅샷에는 등장하지 않았던 신작</li>
+        <li><strong>양 스토어 공통 톱3:</strong> 이클립스: 더 어웨이크닝 · 제우스: 오만의 신 · 리니지M — 순서까지 동일</li>
+        <li><strong>NEXON:</strong> 구글 6위 메이플 키우기, 앱스토어에는 4위 메이플 키우기·9위 FC Online M·12위 마비노기 모바일까지 3종 진입</li>
+        <li><strong>운빨존많겜(111%):</strong> 구글 11위 → 앱스토어 5위로 앱스토어에서 더 강세</li>
+        <li><strong>Century Games:</strong> WOS·킹샷 두 종 모두 양 스토어 진입 유지 (9/3 스냅샷과 동일한 흐름)</li>
+      </ul>
+
+      <h4>13~24위권</h4>
+      <ul>
+        <li>합성·스토리 장르(테이스티 트레블·씨사이드 익스케이프·Gardenscapes/Homescapes)와 방치형 서바이벌(라스트 워·라스트 Z·라스트 어사일럼)이 다수 포진</li>
+        <li><strong>쿠키런 키우기 - 쿠키런: 크럼블(Devsisters):</strong> 양 스토어 동일하게 19위로 진입</li>
+        <li><strong>협타디: 협동 타워 디펜스(Supermagic):</strong> 구글 17위 · 앱스토어 22위로 양 스토어 진입</li>
+      </ul>
+
+      <h4>25~36위권</h4>
+      <ul>
+        <li>아쿠아랜드: 크레이지 서바이벌(구글 29위·앱스토어 31위), 할리우드 머지(구글 28위·앱스토어 27위), 오딘·SOL: enchant도 순위만 바뀐 채 양 스토어 재등장</li>
+        <li><strong>NC:</strong> 앱스토어에 AION2(32위) 신규 진입, 구글은 리니지W(36위) 진입으로 서로 다른 라인업 노출</li>
+        <li>KRAFTON 배틀그라운드(앱스토어 33위)·JOYCITY 임진왜란: 조선의 반격(앱스토어 29위) 신규 관찰</li>
+      </ul>
+
+      <h4>37~46위권</h4>
+      <ul>
+        <li>합성·타운 시뮬레이션(미스터리 타운·꿈의 마을·꿈의 집)과 방치형 키우기(스톤에이지 키우기·캣 히어로·총잡이 고양이)가 다수, 캐주얼 구작(캔디크러쉬사가·브롤스타즈)도 하위권에서 재등장</li>
+        <li><strong>Netmarble:</strong> 구글 37위 뱀피르, 앱스토어에는 37위 뱀피르 외 40위 스톤에이지 키우기까지 2종 노출</li>
+        <li><strong>Playrix:</strong> 41위 꿈의 마을, 46위 꿈의 집(구글)까지 겹치며 시뮬레이션 라인업 강세 지속</li>
+        <li>앱스토어 38위 "리니지M(12)"는 9/3 스냅샷과 동일하게 동명 앱 구분 표기 (리니지M 자체를 가리킴)</li>
+      </ul>
+
+      <h3><span class="mono">03</span>메모</h3>
+      <ul>
+        <li><strong>양 스토어 공통 톱2:</strong> 리니지M · 제우스: 오만의 신 (구글은 제우스 1위, 앱스토어는 리니지M 1위)</li>
+        <li><strong>Com2uS:</strong> 앱스토어 톱3에 제우스·컴투스프로야구V26 동시 진입</li>
+        <li><strong>Century Games:</strong> 두 스토어 모두에 WOS·킹샷·테이스티 트레블 다수 진입</li>
+        <li><strong>NEXON:</strong> 앱스토어 톱10에 3종(메이플 키우기·FC Online M·FC 모바일), 톱22엔 마비노기 모바일 포함 5종</li>
+        <li><strong>Microfun Limited:</strong> 합성·스토리 장르(가십하버·씨사이드 익스케이프)로 양 스토어 진입</li>
+        <li>앱스토어 17위 "리니지M(12)"는 동명 앱 구분 표기로, 리니지M을 가리킴</li>
+        <li><strong>23~34위권 특징:</strong> 포커/홀덤류(피망 포커·한게임 로얄홀덤), 방치형 키우기(오피스 퀸 키우기), 서바이벌 슈터(라스트 Z·뚜까펫)가 다수</li>
+        <li>앱스토어 24위 배틀그라운드(KRAFTON), 26위 명일방주: 엔드필드 신규 진입 눈에 띔</li>
+        <li><strong>35~45위권:</strong> 서브컬처 RPG(소녀전선2·트릭컬 리바이브·붕괴: 스타레일·에픽세븐·승리의 여신 니케), 매치3 캐주얼(캔디크러쉬사가·Homescapes), 웹젠·스마일게이트·엔씨 구작(뮤 모나크2·에픽세븐·리니지W)이 하위권에 포진</li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; width:100%;">
+    <span>© 2026 신도훈</span>
+    <a href="#top" style="text-decoration:none;">맨 위로 ↑</a>
+  </div>
+</footer>
+
+</body>
+</html>
