@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>신도훈 — 게임 QA 엔지니어</title>
-<meta name="description" content="플레이어보다 먼저 게임을 의심하고, 먼저 게임을 믿는 QA 엔지니어 신도훈의 포트폴리오. 콘솔 게임 QA, 버그 리포트/결함 관리, Unity 게임 개발 경험.">
+<meta name="description" content="게임을 직접 만들어 본 QA 엔지니어 신도훈의 포트폴리오. 수업 프로젝트 콘솔 게임 제작·QA, 버그 리포트/결함 관리, Unity 게임 개발 경험.">
 <meta property="og:title" content="신도훈 — 게임 QA 엔지니어">
 <meta property="og:description" content="콘솔 게임 QA, 버그 리포트/결함 관리, Unity 게임 개발 경험을 정리한 포트폴리오.">
 <meta property="og:type" content="website">
@@ -106,12 +106,21 @@
     font-style: normal;
     color: var(--accent);
   }
-  .hero .lede {
-    margin-top: 28px;
-    max-width: 54ch;
-    color: var(--ink-soft);
-    font-size: 1.05rem;
+  .hero .facts {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
   }
+  .hero .fact {
+    padding: 16px 18px;
+    background: var(--paper-alt);
+    border-left: 3px solid var(--mint);
+    border-radius: 4px;
+  }
+  .hero .fact .mono { font-size: 0.7rem; color: var(--accent); }
+  .hero .fact b { display: block; margin-top: 6px; font-size: 1.05rem; line-height: 1.4; }
+  .hero .fact span { display: block; margin-top: 2px; font-size: 0.85rem; color: var(--ink-soft); }
   .hero .meta {
     margin-top: 40px;
     display: flex;
@@ -145,7 +154,10 @@
     grid-template-columns: 1.4fr 1fr;
     gap: 48px;
   }
-  .about-grid p { color: var(--ink-soft); }
+  .overview { display: grid; grid-template-columns: 96px 1fr; gap: 14px 20px; }
+  .overview dt { font-family: "IBM Plex Mono", monospace; font-size: 0.78rem; color: var(--accent); padding-top: 2px; }
+  .overview dd { color: var(--ink-soft); }
+  .overview dd strong { color: var(--ink); font-weight: 600; }
   .edu {
     border-left: 2px solid var(--mint);
     padding: 4px 0 4px 18px;
@@ -315,7 +327,8 @@
   .tbl-wrap td.c { text-align: center; white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 0.84rem; }
   .tbl-wrap td.d { white-space: nowrap; font-family: "IBM Plex Mono", monospace; font-size: 0.84rem; }
   .tbl-wrap tr.total td { background: var(--mint-wash); color: var(--ink); font-weight: 700; }
-  .play-table td:nth-child(4) { min-width: 300px; }
+  .play-table td:nth-child(3), .play-table td:nth-child(4), .play-table td:nth-child(5) { min-width: 230px; }
+  .play-table .badge { margin-top: 6px; }
   .badge { display: inline-block; font-size: 0.78rem; color: var(--accent); background: var(--mint-wash); padding: 1px 8px; border-radius: 3px; white-space: nowrap; }
 
   .doc-cover {
@@ -354,7 +367,10 @@
   @media (max-width: 720px) {
     .bar nav { display: none; }
     .hero { padding: 64px 0 48px; }
+    .hero .facts { grid-template-columns: 1fr 1fr; }
     .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .overview { grid-template-columns: 1fr; gap: 2px; }
+    .overview dd { margin-bottom: 12px; }
     .report .rmeta { grid-template-columns: 1fr 1fr; }
     .proj { grid-template-columns: 1fr; gap: 8px; }
     .proj .period { padding-top: 0; }
@@ -368,8 +384,8 @@
   <div class="bar">
     <span class="name">신도훈</span>
     <nav>
-      <a href="#about">소개</a>
       <a href="#qa">QA 경험</a>
+      <a href="#about">소개</a>
       <a href="#projects">개발 프로젝트</a>
       <a href="#work">분석 · 기획</a>
       <a href="#contact">연락처</a>
@@ -383,11 +399,29 @@
   <section class="hero" id="top">
     <div class="wrap">
       <span class="tag mono">Game QA Engineer</span>
-      <h1>플레이어보다 먼저 게임을 <em>의심하고</em>, 먼저 게임을 <em>믿는</em> QA 엔지니어입니다.</h1>
-      <p class="lede">
-        유한대학교 게임콘텐츠전공에서 게임을 만들며 배운 구조를, 이제는 결함을 찾고 재현하고 기록하는 데 씁니다.
-        직접 개발해 본 사람의 시선으로 버그를 리포트합니다.
-      </p>
+      <h1>게임을 직접 만들어 본 <em>게임 QA 엔지니어</em>, 신도훈입니다.</h1>
+      <div class="facts">
+        <div class="fact">
+          <span class="mono">QA</span>
+          <b>콘솔 게임 제작 · QA</b>
+          <span>2024.03 – 07 · 수업 프로젝트 버그 리포트</span>
+        </div>
+        <div class="fact">
+          <span class="mono">Dev</span>
+          <b>Unity 프로젝트 3건</b>
+          <span>기믹 구현 · 2D 게임 개발 중</span>
+        </div>
+        <div class="fact">
+          <span class="mono">Analysis</span>
+          <b>매출 상위 게임 14종</b>
+          <span>직접 플레이 39시간 · BM 분석</span>
+        </div>
+        <div class="fact">
+          <span class="mono">Edu</span>
+          <b>유한대학교</b>
+          <span>게임콘텐츠전공 재학</span>
+        </div>
+      </div>
       <div class="meta">
         <span class="mono">2021 – 현재 · 유한대학교</span>
         <span class="email">sudaengipyochang@gmail.com</span>
@@ -395,24 +429,62 @@
     </div>
   </section>
 
-  <section id="about">
+  <section id="qa">
     <div class="wrap">
       <div class="sec-head">
         <span class="mono">01</span>
+        <h2>QA 경험</h2>
+      </div>
+      <div class="report">
+        <div class="rhead">
+          <span class="id">CASE&nbsp;/&nbsp;2024-CONSOLE-QA</span>
+          <span class="status done">RESOLVED</span>
+        </div>
+        <div class="rbody">
+          <h3>콘솔 게임 제작 및 QA (학교 수업 프로젝트)</h3>
+          <dl class="rmeta">
+            <div>
+              <dt>기간</dt>
+              <dd>2024.03 – 2024.07</dd>
+            </div>
+            <div>
+              <dt>구분</dt>
+              <dd>수업 프로젝트 · 버그 리포트 / 결함 관리</dd>
+            </div>
+            <div>
+              <dt>역할</dt>
+              <dd>게임 제작, QA 및 오류 수정</dd>
+            </div>
+          </dl>
+          <ul>
+            <li>유한대학교 수업에서 콘솔 게임을 직접 만들고, 완성한 게임을 플레이 테스트해 결함을 찾음</li>
+            <li>발견한 버그의 재현 절차와 발생 조건을 정리하고, 직접 수정한 뒤 해결 여부를 다시 확인</li>
+            <li>만든 사람이 곧 테스터가 되어 구현과 검증을 모두 경험</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="mono">02</span>
         <h2>소개</h2>
       </div>
       <div class="about-grid">
-        <div>
-          <p>
-            게임을 기획하고 코드로 구현해 본 경험이 QA 작업의 기준선입니다.
-            어떤 기믹이 어떻게 깨지는지, 개발자가 어디를 놓치기 쉬운지를 만들어 보며 익혔고,
-            그 감각으로 재현 경로가 분명한 버그 리포트를 씁니다.
-          </p>
-          <p style="margin-top:16px;">
-            콘솔 환경 QA와 Unity 기반 2D 게임 개발을 병행하며,
-            테스트하는 사람과 만드는 사람의 언어를 모두 쓸 수 있는 엔지니어를 지향합니다.
-          </p>
-        </div>
+        <dl class="overview">
+          <dt>희망 직무</dt>
+          <dd><strong>게임 QA 엔지니어</strong> · 콘솔 / 모바일 게임</dd>
+          <dt>QA 경험</dt>
+          <dd>수업에서 만든 콘솔 게임을 직접 테스트해 버그를 찾고, 재현 절차 정리 후 수정·확인</dd>
+          <dt>개발 경험</dt>
+          <dd>Unity 게임 개발 3건 · 게임 기믹 기능 구현, 2D 게임 개발 진행 중</dd>
+          <dt>분석 · 기획</dt>
+          <dd>매출 상위 모바일 게임 14종 플레이 분석, 이벤트 기획서, 재미요소 분석</dd>
+          <dt>강점</dt>
+          <dd>직접 만들어 본 경험으로 <strong>기믹이 깨지는 지점</strong>을 짚고, 재현 경로가 분명한 리포트를 씀</dd>
+        </dl>
         <div>
           <div class="edu">
             <div class="when">2021.03 – 현재</div>
@@ -424,43 +496,6 @@
             <div class="what">작전고등학교</div>
             <div class="where">졸업</div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="qa">
-    <div class="wrap">
-      <div class="sec-head">
-        <span class="mono">02</span>
-        <h2>QA 경험</h2>
-      </div>
-      <div class="report">
-        <div class="rhead">
-          <span class="id">CASE&nbsp;/&nbsp;2024-CONSOLE-QA</span>
-          <span class="status done">RESOLVED</span>
-        </div>
-        <div class="rbody">
-          <h3>콘솔 게임 QA</h3>
-          <dl class="rmeta">
-            <div>
-              <dt>기간</dt>
-              <dd>2024.03 – 2024.07</dd>
-            </div>
-            <div>
-              <dt>구분</dt>
-              <dd>버그 리포트 / 결함 관리</dd>
-            </div>
-            <div>
-              <dt>역할</dt>
-              <dd>QA 및 오류 수정</dd>
-            </div>
-          </dl>
-          <ul>
-            <li>콘솔 환경에서 게임 플레이 테스트를 수행하고 발견한 결함을 리포트</li>
-            <li>재현 절차와 발생 조건을 정리해 버그를 제보하고 수정 여부를 추적</li>
-            <li>사용 환경: 콘솔</li>
-          </ul>
         </div>
       </div>
     </div>
@@ -533,8 +568,8 @@
       <!-- ===== A. 게임 플레이 이력 ===== -->
       <div class="panel doc" role="tabpanel" id="panel-play" aria-labelledby="tab-play">
         <p class="panel-intro">
-          모바일 매출 순위 상위권 게임을 매일 하나씩 직접 플레이하고, <strong>어디까지 진행했는지</strong>와
-          <strong>순위 흐름</strong>을 함께 기록했습니다.
+          모바일 매출 순위 상위권 게임을 매일 하나씩 직접 플레이하고, 게임마다 <strong>어떤 게임인지</strong>,
+          <strong>왜 사람들이 많이 하는지</strong>, <strong>어떻게 돈을 버는지</strong>를 정리했습니다.
         </p>
         <div class="stats">
           <div class="stat"><b>14일</b><span>9/10 – 9/23</span></div>
@@ -542,30 +577,31 @@
           <div class="stat"><b>39시간</b><span>총 플레이 (하루 1–5시간)</span></div>
         </div>
 
-        <h3><span class="mono">01</span>플레이 기록</h3>
+        <h3><span class="mono">01</span>게임별 분석</h3>
         <div class="tbl-wrap">
           <table class="play-table">
             <thead>
-              <tr><th>날짜</th><th>게임</th><th>시간</th><th>진행 상황 (어디까지)</th><th>비고</th></tr>
+              <tr><th>날짜</th><th>게임</th><th>어떤 게임인가</th><th>왜 많이 하는가</th><th>어떻게 돈을 버는가</th><th>시간</th></tr>
             </thead>
             <tbody>
-              <tr><td class="d">9/10</td><td class="k">제우스: 오만의 신</td><td class="c">4h</td><td>Lv.45 전후 · 메인 퀘스트 초반 챕터 완료, 클래스 특화·탈것 등 성장 시스템 순차 해금</td><td></td></tr>
-              <tr><td class="d">9/11</td><td class="k">리니지M</td><td class="c">2h</td><td>Lv.35~40 · 튜토리얼 마을 퀘스트 완료, 기본 장비 세팅</td><td></td></tr>
-              <tr><td class="d">9/12</td><td class="k">SOL: enchant</td><td class="c">1h</td><td>Lv.20 전후 · 튜토리얼 및 메인 스토리 1챕터</td><td></td></tr>
-              <tr><td class="d">9/13</td><td class="k">WOS: 화이트아웃 서바이벌</td><td class="c">5h</td><td>용광로 Lv.13~15 · 챕터 퀘스트 진행, 영웅 모집·연맹 가입, 연구 시작</td><td></td></tr>
-              <tr><td class="d">9/14</td><td class="k">킹샷: Kingshot</td><td class="c">2h</td><td>성(타운센터) Lv.7~8 · 초반 퀘스트 진행, 연맹 가입</td><td></td></tr>
-              <tr><td class="d">9/15</td><td class="k">오딘: 발할라 라이징</td><td class="c">3h</td><td>Lv.40 전후 · 미드가르드 메인 퀘스트 진행, 기본 장비·탈것 획득</td><td></td></tr>
-              <tr><td class="d">9/16</td><td class="k">메이플 키우기</td><td class="c">1h</td><td>챕터 1 스테이지 진행 · 1차 전직 완료</td><td></td></tr>
-              <tr><td class="d">9/17</td><td class="k">이클립스: 더 어웨이크닝</td><td class="c">5h</td><td>Lv.40~45 · 메인 퀘스트 위주 진행, 희귀 등급 장비 세팅, 성소(방치 보상) 해금</td><td><span class="badge">Google · App Store 공동 1위</span></td></tr>
-              <tr><td class="d">9/18</td><td class="k">로블록스 (Roblox)</td><td class="c">2h</td><td>인기 체험(게임) 2~3개 플레이 · 계정 생성·아바타 꾸미기</td><td></td></tr>
-              <tr><td class="d">9/19</td><td class="k">가십하버: 합성 &amp; 스토리 게임</td><td class="c">1h</td><td>레벨 5~8 · 스토리 챕터 1, 초반 구역 복구</td><td></td></tr>
-              <tr><td class="d">9/20</td><td class="k">로얄 매치 (Royal Match)</td><td class="c">2h</td><td>레벨 60~70 · 성 구역 2~3개 복원</td><td></td></tr>
-              <tr><td class="d">9/21</td><td class="k">운빨존많겜</td><td class="c">4h</td><td>일반 난이도 스테이지 다수 클리어 · 신화 유닛 2~3종 조합</td><td><span class="badge">순위 15위 → 11위</span></td></tr>
-              <tr><td class="d">9/22</td><td class="k">라스트 워: 서바이벌</td><td class="c">3h</td><td>본부(HQ) Lv.7~9 · 맵 좀비 처치, 연구소 연구 시작</td><td></td></tr>
-              <tr><td class="d">9/23</td><td class="k">열혈강호: 넥스트</td><td class="c">4h</td><td>Lv.35 도달 · 1차 전직(Lv.10) 완료, 2차 전직·정사파 선택</td><td></td></tr>
+              <tr><td class="d">9/10</td><td class="k">제우스: 오만의 신</td><td>컴투스·에이버튼의 그리스 신화 MMORPG. 언리얼 엔진5, PC·모바일 크로스플레이</td><td>상위 유저 위주 경쟁을 줄인 '모두를 위한 MMORPG'. AI 모드로 켜 두지 않아도 성장하고, 채집·제작·거래 같은 경제 활동도 있음</td><td>확률형 뽑기, 성장 패키지, 시즌 패스 등 국내 MMORPG의 일반적인 BM</td><td class="c">4h</td></tr>
+              <tr><td class="d">9/11</td><td class="k">리니지M</td><td>엔씨소프트가 PC 리니지를 모바일로 옮긴 MMORPG (2017~)</td><td>원작 세대의 향수, 혈맹 단위 공성전과 서버 내 권력 경쟁, 거래로 생기는 아이템의 자산 가치</td><td>변신·마법인형 확률형 뽑기, 장비 강화 재료, 고액 패키지. 상위 고과금 유저 비중이 큰 구조</td><td class="c">2h</td></tr>
+              <tr><td class="d">9/12</td><td class="k">SOL: enchant</td><td>넷마블 퍼블리싱, 알트나인 개발의 '전지적 MMORPG' (2026.06 출시)</td><td>상위 랭커가 서버 일부를 관리하는 '신권' 시스템으로 "신이 된다"는 경쟁 목표가 분명함. 리니지M 개발진 출신, 스트리머 전용 월드 운영</td><td>확률형 상품과 성장 패키지 중심. 출시 당일 앱스토어 매출 1위</td><td class="c">1h</td></tr>
+              <tr><td class="d">9/13</td><td class="k">WOS: 화이트아웃 서바이벌</td><td>Century Games의 빙하기 생존 도시 건설 전략(SLG)</td><td>짧게 자주 접속하는 건설·연구 루프, 영웅 수집, 연맹 협동과 서버 간 전쟁이 주는 소속감</td><td>건설·연구 시간을 줄이는 가속 아이템, 영웅 뽑기, 매일 바뀌는 특가 팩, 월간 카드</td><td class="c">5h</td></tr>
+              <tr><td class="d">9/14</td><td class="k">킹샷: Kingshot</td><td>Century Games의 중세 왕국 SLG. WOS와 같은 구조를 다른 테마로 옮김</td><td>WOS로 검증된 성장 루프에 더 가벼운 초반 진입, 연맹 단위 협동과 경쟁</td><td>WOS와 동일하게 가속 아이템·영웅 뽑기·패키지 판매</td><td class="c">2h</td></tr>
+              <tr><td class="d">9/15</td><td class="k">오딘: 발할라 라이징</td><td>라이온하트 개발, 카카오게임즈 서비스의 북유럽 신화 오픈월드 MMORPG (2021~)</td><td>모바일에서 보기 드문 고퀄리티 그래픽과 끊김 없는 오픈월드 탐험, 대규모 분쟁·공성 콘텐츠</td><td>탈것·변신·펫 확률형 뽑기, 장비 강화, 시즌 패스</td><td class="c">3h</td></tr>
+              <tr><td class="d">9/16</td><td class="k">메이플 키우기</td><td>넥슨의 메이플스토리 IP 방치형 RPG</td><td>익숙한 메이플 캐릭터·몬스터, 자동 전투라 부담 없이 켜 두기만 해도 성장, 전직·스킬로 이어지는 원작 성장감</td><td>장비·동료 뽑기, 성장 패스, 광고 제거·편의 상품, 한정 패키지</td><td class="c">1h</td></tr>
+              <tr><td class="d">9/17</td><td class="k">이클립스: 더 어웨이크닝<br><span class="badge">Google · App Store 공동 1위</span></td><td>엔픽셀 개발, 스마일게이트 퍼블리싱의 PC·모바일 MMORPG (2026.09 출시)</td><td>장시간 접속과 반복 사냥 부담을 덜어낸 'MMOLite'. 접속하지 않아도 재화가 쌓이는 성소, 최대 24시간 AI 자동 플레이</td><td>확률형 소환이 있지만 확률을 높이고 여러 번 뽑으면 확정 획득을 주는 방식으로 과금 피로를 줄임</td><td class="c">5h</td></tr>
+              <tr><td class="d">9/18</td><td class="k">로블록스 (Roblox)</td><td>유저가 직접 만든 게임('체험')을 모아 둔 UGC 플랫폼</td><td>무료로 수많은 장르를 즐길 수 있고, 친구와 함께하는 놀이터 역할, 직접 만들고 공유할 수 있음</td><td>가상 화폐 Robux 판매(아바타 아이템·게임 패스), Premium 구독. 수익 일부를 제작자에게 배분</td><td class="c">2h</td></tr>
+              <tr><td class="d">9/19</td><td class="k">가십하버: 합성 &amp; 스토리 게임</td><td>Microfun의 합성(머지) 퍼즐 + 드라마 스토리 캐주얼 게임</td><td>같은 아이템을 합치는 단순한 손맛, 마을을 복구하며 이어지는 연속극 같은 스토리</td><td>에너지·보석 판매, 시즌 패스, 한정 이벤트 패키지</td><td class="c">1h</td></tr>
+              <tr><td class="d">9/20</td><td class="k">로얄 매치 (Royal Match)</td><td>Dream Games의 매치3 퍼즐 + 성 꾸미기</td><td>1~2분 안에 끝나는 짧은 레벨, 시원한 연출, 강제 광고 없이 쾌적한 플레이, 성을 복원하는 목표</td><td>실패 직전 코인으로 이동 횟수 추가, 부스터·라이프 판매, 로얄 패스</td><td class="c">2h</td></tr>
+              <tr><td class="d">9/21</td><td class="k">운빨존많겜<br><span class="badge">순위 15위 → 11위</span></td><td>111%의 랜덤 유닛 디펜스 (협동·대전)</td><td>운에 따라 판이 뒤집히는 반전과 짧은 판 길이, 친구와 함께하는 협동 모드, 커뮤니티 밈</td><td>유닛·신화 재료 뽑기, 시즌 패스, 광고 시청 보상</td><td class="c">4h</td></tr>
+              <tr><td class="d">9/22</td><td class="k">라스트 워: 서바이벌</td><td>FirstFun의 좀비 서바이벌 SLG</td><td>병력이 불어나는 미니게임 광고로 대량 유입, 실제로는 기지 건설·영웅 육성·연맹전으로 장기 플레이 유도</td><td>가속 아이템, 영웅 뽑기, 단계별 특가 패키지</td><td class="c">3h</td></tr>
+              <tr><td class="d">9/23</td><td class="k">열혈강호: 넥스트</td><td>킹넷의 원작 만화 IP 카툰 렌더링 무협 MMORPG (2026.07 출시)</td><td>원작 만화의 향수, 자유 거래, 정파·사파 세력전과 문파·결연 같은 협동 요소. 사전 등록 100만 명</td><td>확률형 상품, 강화·탈것·펫 등 성장 패키지</td><td class="c">4h</td></tr>
             </tbody>
           </table>
         </div>
+        <p class="note-small">수익 구조는 직접 플레이하며 본 상점 구성과 공개된 출시 정보를 기준으로 정리했습니다.</p>
 
         <h3><span class="mono">02</span>순위 스냅샷 분석</h3>
 
