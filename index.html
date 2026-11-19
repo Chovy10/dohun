@@ -392,7 +392,8 @@
 
   /* ---------- responsive ---------- */
   @media (max-width: 720px) {
-    .bar nav { display: none; }
+    .bar nav a:not(.page-link) { display: none; }
+    .bar nav a.page-link { padding: 10px 0; }
     .hero { padding: 64px 0 48px; }
     .hero .facts { grid-template-columns: 1fr 1fr; }
     .about-grid { grid-template-columns: 1fr; gap: 32px; }
@@ -418,6 +419,8 @@
       <a href="#contact">연락처</a>
       <a href="study.html">study</a>
       <a href="gamePlay.html">gamePlay</a>
+      <a class="page-link" href="bukangi-multicount.html">기획서</a>
+      <a class="page-link" href="game-job-levelcheck.html">게임회사 사이트</a>
     </nav>
   </div>
 </header>

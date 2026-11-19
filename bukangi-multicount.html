@@ -1,0 +1,409 @@
+<title>Dusty Shark 멀티카운트</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;800&family=Gothic+A1:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: a bright game-launch microsite, full-bleed harbor bands with one buoy-orange moment */
+:root{
+  color-scheme:light;
+  --white:#ffffff;--fog:#e9eff1;--fog2:#d6dfe2;--ink:#10171c;--sub:#4c5960;
+  --steel:#6f7f86;--hot:#f4511e;--hot-d:#b9340b;
+  --en:"Barlow Condensed","Gothic A1",sans-serif;
+  --ko:"Gothic A1","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{margin:0;background:var(--white);color:var(--ink);font:500 16px/1.6 var(--ko);word-break:keep-all}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--white)}
+.w{max-width:1200px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.band{padding-block:clamp(64px,9vw,120px)}
+.fog{background:var(--fog)}
+h1,h2,h3,p{margin:0}
+h2{font-size:clamp(32px,5vw,60px);font-weight:800;line-height:1.14;letter-spacing:-.035em;text-wrap:balance;max-width:17em}
+h3{font-size:19px;font-weight:800;letter-spacing:-.02em}
+.small{font-size:13px;color:var(--sub)}
+.en{font-family:var(--en);font-weight:800}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:var(--ko);fill:var(--ink)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--hot-d);outline-offset:2px}
+.scroll{overflow-x:auto}
+.scroll svg{min-width:640px}
+#visit svg,#curve svg{min-width:0}
+@media (max-width:560px){#visit svg,#curve svg{min-width:520px}}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--white);border-bottom:1px solid var(--fog2)}
+.nav .w{display:flex;align-items:center;justify-content:space-between;gap:20px;height:56px}
+.nav b{font:800 23px var(--en);letter-spacing:.02em;white-space:nowrap}
+.nav nav{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none}
+.nav a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:700;white-space:nowrap;padding-block:6px}
+.nav a:hover{color:var(--hot-d)}
+
+.hero{background:var(--fog);overflow:hidden;padding-block:clamp(28px,4vw,52px) clamp(32px,4vw,56px)}
+.hero h1{font:800 clamp(64px,17.2vw,232px)/.86 var(--en);letter-spacing:-.005em;text-transform:uppercase;white-space:nowrap}
+.hero .gun{width:min(100%,1040px);margin:clamp(-92px,-6.6vw,-24px) 0 0 auto;position:relative}
+.hero .meta{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 32px;margin-top:18px}
+.hero .meta p:first-child{font-size:clamp(20px,2.6vw,30px);font-weight:800;letter-spacing:-.03em}
+.hero .date{font:600 clamp(22px,2.6vw,32px) var(--en)}
+
+.issue{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,72px);align-items:end;margin-top:44px}
+.huge{font:800 clamp(110px,17vw,220px)/.84 var(--en);color:var(--hot)}
+.chain{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin-top:56px;padding-top:24px;border-top:2px solid var(--ink);font-size:clamp(20px,2.8vw,32px);font-weight:800;letter-spacing:-.03em}
+.chain i{font-style:normal;color:var(--hot)}
+
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,4vw,56px);margin-top:48px;align-items:end}
+.pair p{margin-top:14px}
+.spec{margin-top:52px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);font-size:15px}
+.spec>*{padding:13px 0;border-top:1px solid var(--fog2)}
+.spec .h{font-weight:800;border-top:2px solid var(--ink)}
+.spec .on{font-weight:800;color:var(--hot-d)}
+
+.rack{margin-top:44px;border-bottom:2px solid var(--ink)}
+.row{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,5fr) minmax(0,3fr);gap:24px;align-items:center;padding-block:14px;border-top:1px solid var(--fog2)}
+.row:first-child{border-top:2px solid var(--ink)}
+.row b{font:800 clamp(24px,2.6vw,34px)/1.05 var(--en)}
+.row b span{display:block;font-size:.72em;font-weight:600;color:var(--sub)}
+.row svg{max-width:440px;margin-inline:auto}
+.days{text-align:right;font:600 22px var(--en);color:var(--sub);word-spacing:.12em}
+.days em{font-style:normal;font-weight:800;color:var(--hot-d)}
+
+.orange{background:var(--hot);color:var(--ink)}
+.orange svg text{fill:var(--ink)}
+.frames{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,3vw,40px);margin-top:36px}
+.strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px}
+.strip figure{margin:0;background:var(--white);padding:10px 8px 8px;min-width:0}
+.strip figcaption{font-size:12px;font-weight:700;text-align:center;margin-top:4px}
+.kwak{display:flex;align-items:center;justify-content:center;aspect-ratio:330/160;font-size:clamp(30px,4vw,52px);font-weight:800;color:var(--hot-d);letter-spacing:-.04em}
+
+.gray{background:var(--steel);color:var(--ink)}
+.decal{max-width:860px;margin:12px auto 0}
+.swatch{display:flex;height:76px;margin-top:28px}
+.swatch span{display:flex;align-items:flex-end;padding:8px 12px;font-weight:800;font-size:14px;min-width:0}
+
+.steps{margin-top:18px;font-size:clamp(15px,1.7vw,18px);font-weight:700;color:var(--sub)}
+.steps i{font-style:normal;color:var(--hot-d);margin-inline:6px}
+.game{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(20px,3vw,44px);margin-top:36px;align-items:start}
+.board{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px}
+.cell{aspect-ratio:1;min-width:0;padding:0;border:0;border-radius:2px;background:var(--white);color:var(--sub);font:600 clamp(12px,1.5vw,17px) var(--en);cursor:pointer}
+.cell:hover:not(:disabled){background:var(--ink);color:var(--white)}
+.cell:disabled{cursor:default;background:var(--fog2);color:var(--ink)}
+.cell.r:disabled{background:var(--ink);color:var(--white)}
+.cell.u:disabled{background:var(--hot);color:var(--ink)}
+.count{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-bottom:16px;border-bottom:2px solid var(--ink)}
+.count b{display:block;font:800 clamp(30px,3.2vw,42px)/1 var(--en)}
+.count span{font-size:12px;color:var(--sub);font-weight:700}
+.log{list-style:none;margin:0;padding:0;min-height:176px;font-size:14px}
+.log li{padding:7px 0;border-bottom:1px solid var(--fog2)}
+.log li.hit{font-weight:800;color:var(--hot-d)}
+.log li.idle{color:var(--sub)}
+.btns{display:flex;gap:8px;margin-top:16px}
+.btn{flex:1;min-height:50px;border:2px solid var(--ink);background:var(--ink);color:var(--white);font:800 15px var(--ko);cursor:pointer}
+.btn.alt{flex:0 0 auto;padding-inline:18px;background:transparent;color:var(--ink)}
+.btn:hover{background:var(--hot);border-color:var(--hot);color:var(--ink)}
+
+.rate{display:flex;align-items:flex-end;gap:clamp(16px,3vw,40px);margin-top:36px;flex-wrap:wrap}
+.rate .huge{font-size:clamp(84px,12vw,160px)}
+.rate p{padding-bottom:12px;font-weight:700}
+.line{display:flex;height:16px;margin-top:20px;background:var(--fog2)}
+.line span{background:var(--hot)}
+
+.prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:44px;border-top:2px solid var(--ink)}
+.price{padding:18px clamp(12px,2vw,28px) 22px 0;min-width:0}
+.price+.price{padding-left:clamp(12px,2vw,28px);border-left:1px solid var(--fog2)}
+.price b{display:block;font:800 clamp(38px,6.4vw,84px)/1 var(--en);margin-top:6px}
+.price.top b{color:var(--hot)}
+.price span{font-size:14px;font-weight:700;color:var(--sub)}
+.two{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(28px,5vw,64px);margin-top:56px}
+.two h3{margin-bottom:14px}
+
+.money{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,2vw,24px);align-items:end;height:400px;margin-top:40px;border-bottom:2px solid var(--ink)}
+.col{display:flex;flex-direction:column;justify-content:flex-end;height:100%;min-width:0}
+.col b{font:800 clamp(38px,6vw,76px)/1 var(--en)}
+.col i{display:block;background:var(--ink);margin-top:10px}
+.col.top b{color:var(--hot)}
+.col.top i{background:var(--hot)}
+.cap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,2vw,24px);margin-top:12px}
+.cap b{display:block;font-size:17px;font-weight:800}
+.cap span{font-size:13px;color:var(--sub)}
+
+.risk{margin-top:40px;border-bottom:2px solid var(--ink)}
+.risk div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;padding-block:18px;border-top:1px solid var(--fog2);font-size:clamp(17px,2vw,22px);letter-spacing:-.02em}
+.risk div:first-child{border-top:2px solid var(--ink)}
+.risk b{font-weight:800}
+.risk span{color:var(--sub)}
+.end{background:var(--ink);color:var(--white);overflow:hidden;padding-block:28px 10px}
+.end p{font:800 clamp(64px,17.2vw,232px)/.86 var(--en);white-space:nowrap}
+
+@media (max-width:820px){
+  .nav nav{display:none}
+  .issue,.pair,.frames,.game,.two{grid-template-columns:minmax(0,1fr)}
+  .row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .row svg{grid-column:span 2;grid-row:2;max-width:100%}
+  .days{align-self:center}
+  .money{height:300px}
+  .risk div{grid-template-columns:minmax(0,1fr);gap:2px}
+  .spec{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a7b4b9"/><stop offset=".45" stop-color="#7a8a91"/><stop offset="1" stop-color="#55646b"/></linearGradient>
+    <linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#55626a"/><stop offset=".5" stop-color="#2c363b"/><stop offset="1" stop-color="#171e22"/></linearGradient>
+    <linearGradient id="pl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#404c52"/><stop offset="1" stop-color="#1a2125"/></linearGradient>
+    <linearGradient id="bk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4d5c64"/><stop offset=".6" stop-color="#2c373e"/><stop offset="1" stop-color="#1e272c"/></linearGradient>
+    <linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#84949b"/><stop offset="1" stop-color="#5b6b73"/></linearGradient>
+    <linearGradient id="bl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3d9c3"/><stop offset="1" stop-color="#fbf6ea"/></linearGradient>
+    <symbol id="decal" viewBox="0 0 200 80"><g stroke="#0b1114" stroke-width=".8" stroke-linejoin="round"><path d="M88 22 108 2Q112 12 116 24Z" fill="#141b1f"/><path d="M146 29 156 19 161 32Z" fill="#141b1f"/><path d="M74 54 60 77Q80 70 94 56Z" fill="#141b1f"/><path d="M4 40Q40 18 90 20 130 20 160 34L196 14Q190 28 186 40 190 52 196 66L160 48Q120 62 80 58 40 56 4 40Z" fill="#1a2227"/><path d="M12 43Q50 56 90 54 125 54 152 46 110 45 80 46 45 47 12 43Z" fill="#f4eee0"/></g><path d="M20 30Q55 22 92 24 124 25 150 33" fill="none" stroke="#6f7f86" stroke-width="1.2" opacity=".7"/><circle cx="31" cy="33" r="3.2" fill="#f4eee0"/><circle cx="31.6" cy="33" r="1.6" fill="#0b1114"/><path d="M54 29Q51 36 52 43M61 28Q58 36 59 43M68 28Q65 36 66 43" fill="none" stroke="#9fadb2" stroke-width="1.6"/></symbol>
+    <symbol id="g-win" viewBox="0 0 640 220"><g stroke="#0b1114" stroke-width="1.5" stroke-linejoin="round"><path fill="url(#gm)" d="M474 84 612 112Q625 115 628 128L634 178Q634 190 622 188L596 184 520 136 474 132Z"/><path fill="url(#st)" d="M604 110 612 112Q625 115 628 128L634 178Q634 190 622 188L612 186Z"/><rect x="8" y="76" width="350" height="12" rx="2" fill="url(#st)"/><rect x="20" y="91" width="330" height="13" rx="4" fill="url(#st)"/><path fill="url(#gm)" d="M188 88H352V120H212Q196 120 190 106Z"/><rect x="62" y="72" width="12" height="36" rx="2" fill="url(#pl)"/><path fill="url(#st)" d="M30 76 34 64H42L46 76Z"/><path fill="url(#st)" d="M456 72 468 52 480 57 474 76Z"/><path fill="url(#gm)" d="M350 68H462L478 82V126Q478 138 462 138H350Z"/></g><path d="M354 72H460L470 80H354Z" fill="#fff" opacity=".2"/><path d="M206 94H344" stroke="#fff" opacity=".22" stroke-width="3"/><path d="M482 92 606 118" stroke="#fff" opacity=".22" stroke-width="3"/><g fill="#2a3338"><rect x="222" y="104" width="24" height="5" rx="2.5"/><rect x="260" y="104" width="24" height="5" rx="2.5"/><rect x="298" y="104" width="24" height="5" rx="2.5"/></g><path d="M410 138Q404 184 438 192 478 192 482 154 482 140 470 136" fill="none" stroke="#2c363b" stroke-width="8"/><path d="M432 138Q428 152 436 160" fill="none" stroke="#171e22" stroke-width="4"/><circle cx="360" cy="128" r="2.5" fill="#38444a"/><circle cx="468" cy="128" r="2.5" fill="#38444a"/><use href="#decal" x="358" y="78" width="110" height="44"/></symbol>
+    <symbol id="g-ak" viewBox="0 0 640 220"><g stroke="#0b1114" stroke-width="1.5" stroke-linejoin="round"><path fill="url(#gm)" d="M470 78 616 98Q628 100 630 112L634 170Q634 182 622 182H598L528 130 470 128Z"/><path fill="url(#st)" d="M606 97 616 98Q628 100 630 112L634 170Q634 182 622 182H612Z"/><path fill="url(#st)" d="M8 84H44V100H8Z"/><rect x="44" y="87" width="96" height="9" fill="url(#st)"/><path fill="url(#st)" d="M112 87 117 61H129L134 87Z"/><rect x="132" y="66" width="134" height="13" rx="4" fill="url(#st)"/><path fill="url(#gm)" d="M138 82H266V124H156Q144 124 140 112Z"/><path fill="url(#st)" d="M306 128H374Q370 176 336 216L276 196Q302 164 306 128Z"/><path fill="url(#pl)" d="M438 128H480L464 202Q461 213 449 210L425 204Q415 200 418 190Z"/><path fill="url(#gm)" d="M262 62H452L472 74V128H262Z"/><path fill="url(#st)" d="M266 62 278 48H308L314 62Z"/></g><path d="M266 66H450L464 74H266Z" fill="#fff" opacity=".2"/><path d="M478 84 608 102" stroke="#fff" opacity=".24" stroke-width="3"/><path d="M144 86H262" stroke="#fff" opacity=".2" stroke-width="3"/><g fill="#20292e"><rect x="162" y="100" width="24" height="7" rx="3.5"/><rect x="198" y="100" width="24" height="7" rx="3.5"/><rect x="234" y="100" width="24" height="7" rx="3.5"/></g><path d="M16 88V96M24 88V96M32 88V96" stroke="#0b1114" stroke-width="2"/><path d="M319 148 370 154M312 170 358 180M298 192 342 206" stroke="#59666d" stroke-width="2" fill="none"/><path d="M384 128Q384 162 418 162H432V128" fill="none" stroke="#2c363b" stroke-width="5"/><path d="M408 130Q404 142 412 150" fill="none" stroke="#171e22" stroke-width="4"/><path d="M446 104 466 112" stroke="#171e22" stroke-width="4" stroke-linecap="round"/><circle cx="272" cy="118" r="2.5" fill="#38444a"/><circle cx="460" cy="118" r="2.5" fill="#38444a"/><use href="#decal" x="288" y="73" width="136" height="54.4"/></symbol>
+    <symbol id="g-p90" viewBox="0 0 640 220"><g stroke="#0b1114" stroke-width="1.5" stroke-linejoin="round"><rect x="26" y="98" width="76" height="15" rx="2" fill="url(#st)"/><path fill="url(#pl)" d="M122 136H184L172 188Q168 200 152 198H136Q120 196 124 182Z"/><path fill="url(#pl)" d="M322 136H398L406 202Q408 214 394 214H350Q338 214 338 202Z"/><path fill="url(#gm)" d="M100 86H500Q572 88 602 132 614 152 614 186H542L508 138H100Z"/><path fill="url(#st)" d="M140 62H470Q488 62 488 78V88H140Z"/><path fill="url(#st)" d="M250 62V40H330V62Z"/></g><path d="M104 90H498Q548 92 582 122" fill="none" stroke="#fff" opacity=".24" stroke-width="3"/><path d="M152 70H476" stroke="#7a8a91" stroke-width="3"/><path d="M180 62V88M220 62V88M380 62V88M420 62V88M460 62V88" stroke="#0b1114" stroke-width="1.5"/><rect x="262" y="46" width="56" height="9" rx="2" fill="#a7b4b9" opacity=".55"/><path d="M36 102V110M46 102V110M56 102V110" stroke="#0b1114" stroke-width="2"/><path d="M196 138Q196 170 226 170H292Q308 170 312 138" fill="none" stroke="#2c363b" stroke-width="6"/><path d="M256 140Q252 152 260 160" fill="none" stroke="#171e22" stroke-width="4"/><path d="M346 152H396M348 168H398M350 184H400" stroke="#59666d" stroke-width="2"/><circle cx="112" cy="126" r="2.5" fill="#38444a"/><circle cx="490" cy="126" r="2.5" fill="#38444a"/><use href="#decal" x="326" y="92" width="112" height="44.8"/></symbol>
+    <symbol id="g-de" viewBox="0 0 640 220"><g stroke="#0b1114" stroke-width="1.5" stroke-linejoin="round"><path fill="url(#pl)" d="M426 146H516L540 204Q543 214 530 214H456Q444 214 442 204Z"/><path fill="url(#st)" d="M516 76 536 60 544 68 520 98Z"/><path fill="url(#st)" d="M112 118H518L514 150H424Q414 170 384 176 344 178 336 160L332 150H134Q118 150 112 132Z"/><rect x="38" y="60" width="14" height="54" rx="2" fill="url(#st)"/><rect x="52" y="44" width="436" height="12" fill="url(#st)"/><path fill="url(#st)" d="M78 44V32H96L102 44Z"/><path fill="url(#st)" d="M478 44V32H506V56H478Z"/><path fill="url(#gm)" d="M52 56H504Q518 56 520 70V118H52Z"/></g><path d="M56 60H502Q512 60 514 68H56Z" fill="#fff" opacity=".22"/><path d="M436 74V112M446 74V112M456 74V112M466 74V112M476 74V112M486 74V112M496 74V112" stroke="#38444a" stroke-width="3"/><rect x="310" y="70" width="84" height="18" rx="2" fill="#20292e"/><path d="M344 150Q344 186 376 186H400Q416 184 418 150" fill="none" stroke="#2c363b" stroke-width="5"/><path d="M380 152Q376 164 384 172" fill="none" stroke="#171e22" stroke-width="4"/><path d="M450 160H518M454 174H524M458 188H530M462 202H534" stroke="#59666d" stroke-width="2"/><circle cx="150" cy="134" r="3" fill="#59666d"/><circle cx="480" cy="134" r="3" fill="#59666d"/><use href="#decal" x="112" y="60" width="140" height="56"/></symbol>
+    <g id="k-rear"><path d="M186 21 217 5Q213 20 197 31Z" fill="url(#bk)" stroke="#2c373e"/><path d="M257 95 273 83 288 95 300 116 307 125 277 136 269 114Z" fill="url(#pl)" stroke="#2c373e"/><path d="M264 101 284 90M269 111 293 100M272 121 299 110M276 130 304 119" stroke="#6b7a81" stroke-width="2.5"/><path d="M253 94 272 80 277 85 258 99Z" fill="#c4cfd2" stroke="#0b1114" stroke-width=".8"/><path d="M277 136 307 125 314 134 288 136 325 151Q312 155 300 153 292 153 288 150L281 145Z" fill="url(#bk)" stroke="#2c373e"/></g>
+    <g id="k-top"><path d="M28 44Q58 25 103 22H164Q182 22 190 24 215 29 229 32 246 41 256 52" fill="none" stroke="#fff" stroke-width="1.6" opacity=".3"/><path d="M172 62Q186 72 180 83 198 79 205 65Z" fill="url(#bk)" stroke="#2c373e" stroke-width=".8"/><circle cx="100" cy="35" r="5.6" fill="#efe7d6"/><circle cx="100.6" cy="35" r="3.2" fill="#0b1114"/><circle cx="102" cy="33.6" r="1" fill="#fff"/><path d="M24 49 31 47" stroke="#0b1114" stroke-width="1.6"/><path d="M127 45Q122 54 124 64M137 46Q132 55 134 65M147 48Q142 56 144 66" fill="none" stroke="#c9d4d7" stroke-width="2.2"/></g>
+    <symbol id="k-closed" viewBox="0 0 330 160"><use href="#k-rear"/><path fill="url(#fl)" stroke="#2c373e" d="M4 58Q30 40 50 27 75 19 103 19H164Q180 19 190 21 215 26 231 29 248 38 259 50 268 60 271 71L273 98 257 95Q225 90 197 87L162 84 173 76Q145 82 112 80 70 78 30 66Z"/><path d="M4 58Q30 40 50 27 75 19 103 19H164Q180 19 190 21 215 26 231 29 248 38 259 50 268 60 271 71L272 84Q225 64 170 60 130 56 103 46 60 50 4 58Z" fill="url(#bk)"/><path d="M30 66Q70 78 112 80 145 82 173 76L168 64Q135 68 108 67 70 66 36 60ZM162 84 197 87Q225 90 257 95L273 98 272 84Q225 70 190 69L168 72Z" fill="url(#bl)"/><path d="M30 66Q70 78 112 80 145 82 173 76M162 84 197 87Q225 90 257 95L273 98" fill="none" stroke="#c4cfd2" stroke-width="1.6"/><path d="M30 64Q70 62 103 50" fill="none" stroke="#0b1114" stroke-width="2.6"/><path d="M48 63 51 70 55 62ZM62 62 65 69 69 60ZM76 59 79 66 83 57ZM89 55 92 61 96 53Z" fill="#fbf6ea" stroke="#2c373e" stroke-width=".7" stroke-linejoin="round"/><use href="#k-top"/></symbol>
+    <symbol id="k-open" viewBox="0 0 330 160"><use href="#k-rear"/><path fill="url(#fl)" stroke="#2c373e" d="M4 58Q30 40 50 27 75 19 103 19H164Q180 19 190 21 215 26 231 29 248 38 259 50 268 60 271 71L273 98 257 95Q225 90 197 87L162 84 173 76Q145 81 117 88 90 93 63 91V83Q68 72 76 64 90 54 103 50 70 54 40 59Z"/><path d="M4 58Q30 40 50 27 75 19 103 19H164Q180 19 190 21 215 26 231 29 248 38 259 50 268 60 271 71L272 84Q225 64 170 60 130 56 103 46 70 52 40 59Z" fill="url(#bk)"/><path d="M63 91Q90 93 117 88 145 81 173 76L168 64Q135 68 112 74 85 81 65 80ZM162 84 197 87Q225 90 257 95L273 98 272 84Q225 70 190 69L168 72Z" fill="url(#bl)"/><path d="M63 91Q90 93 117 88 145 81 173 76M162 84 197 87Q225 90 257 95L273 98" fill="none" stroke="#c4cfd2" stroke-width="1.6"/><path d="M40 59Q70 54 103 50 90 54 76 64 68 72 63 83" fill="none" stroke="#a23a4a" stroke-width="3" stroke-linejoin="round"/><path d="M46 58 50 67 54 57ZM58 56 62 65 66 55ZM70 55 74 64 78 54ZM82 53 86 61 90 52ZM93 51 96 58 99 50ZM92 55 84 52 85 61ZM81 61 73 58 75 67ZM72 69 64 67 67 75ZM66 79 59 78 63 85Z" fill="#fbf6ea" stroke="#2c373e" stroke-width=".7" stroke-linejoin="round"/><use href="#k-top"/></symbol>
+  </defs>
+</svg>
+
+<header class="nav"><div class="w">
+  <b>DUSTY SHARK</b>
+  <nav aria-label="페이지 이동">
+    <a href="#issue">이슈</a><a href="#weapons">무기</a><a href="#gurkha">구르카</a><a href="#multi">멀티카운트</a><a href="#rate">확률</a><a href="#price">가격</a><a href="#plan">일정·성과</a>
+  </nav>
+</div></header>
+
+<main>
+<section class="hero"><div class="w">
+  <h1>Dusty Shark</h1>
+  <div class="gun"><svg viewBox="0 0 640 220" role="img" aria-label="회색 총신에 흑상어 한 마리를 그린 AK47 시안"><use href="#g-ak"/></svg></div>
+  <div class="meta">
+    <p>서든어택 흑상어 스킨 무기 5종</p>
+    <p class="date">2027.01.07 — 02.04</p>
+  </div>
+</div></section>
+
+<section class="band" id="issue"><div class="w">
+  <h2>3주 만에 100만 명이 상어를 보러 갔다</h2>
+  <div class="issue">
+    <div>
+      <p class="huge">100만</p>
+      <p style="margin-top:14px;font-size:19px;font-weight:700">부산 북항 상어 '부캉이' 방문객</p>
+    </div>
+    <div class="scroll" id="visit"></div>
+  </div>
+  <p class="chain"><span>부캉이 열풍</span><i>→</i><span>흑상어 콘셉트</span><i>→</i><span>Dusty Shark</span></p>
+  <p class="small" style="margin-top:10px">부캉이 이름과 캐릭터는 게임에 쓰지 않습니다.</p>
+</div></section>
+
+<section class="band fog"><div class="w">
+  <h2>총엔 상어 한 마리, 칼은 상어 그 자체</h2>
+  <div class="pair">
+    <div><svg viewBox="0 0 640 220" role="img" aria-label="AK47 Dusty Shark 시안"><use href="#g-ak"/></svg><p><b>총 4종</b> 원래 형태 그대로</p></div>
+    <div><svg viewBox="0 0 330 160" role="img" aria-label="흑상어 구르카 시안"><use href="#k-closed"/></svg><p><b>구르카</b> 형태까지 흑상어로</p></div>
+  </div>
+  <div class="spec">
+    <span class="h">항목</span><span class="h">총 4종</span><span class="h">구르카</span>
+    <span>표면</span><span>흑상어 그래픽</span><span class="on">흑상어 피부</span>
+    <span>형태</span><span>기본 유지</span><span class="on">상어형 구르카</span>
+    <span>꺼내기</span><span>기본</span><span class="on">입 벌림</span>
+    <span>처치음</span><span>기본</span><span class="on">"콱!"</span>
+    <span>능력치</span><span>기본 무기와 동일</span><span>기본 무기와 동일</span>
+  </div>
+</div></section>
+
+<section class="band" id="weapons"><div class="w">
+  <h2>무기 5종, 구성품 16개</h2>
+  <div class="rack" id="rack"></div>
+  <p class="small" style="margin-top:12px">주황색 기간이 유니크 보상입니다. 이미지는 콘셉트 시안입니다.</p>
+</div></section>
+
+<section class="band orange" id="gurkha"><div class="w">
+  <h2>입을 벌리는 구르카</h2>
+  <div class="scroll" style="margin-top:20px">
+    <svg viewBox="0 0 900 340" role="img" aria-label="흑상어 구르카 부위별 설계도">
+      <use href="#k-open" x="150" y="20" width="600" height="291"/>
+      <g stroke="#10171c" fill="none"><path d="M332 78V50H130"/><path d="M399 100V18"/><path d="M548 30H592"/><path d="M259 135V232H120"/><path d="M541 186V262"/><path d="M684 205H772"/><path d="M745 294H782"/></g>
+      <g font-size="18" font-weight="800">
+        <text x="20" y="46">눈</text><text x="408" y="30">아가미</text><text x="600" y="36">등지느러미</text>
+        <text x="20" y="228">이빨</text><text x="480" y="290">흰 배 칼날</text><text x="780" y="200">손잡이</text><text x="790" y="300">꼬리</text>
+      </g>
+    </svg>
+  </div>
+  <div class="frames">
+    <div><h3>꺼낼 때</h3><div class="strip">
+      <figure><svg viewBox="0 0 330 160" role="img" aria-label="입을 다문 칼"><use href="#k-closed"/></svg><figcaption>0.0초</figcaption></figure>
+      <figure><svg viewBox="0 0 330 160" role="img" aria-label="입을 벌린 칼"><use href="#k-open"/></svg><figcaption>0.3초 입 벌림</figcaption></figure>
+      <figure><svg viewBox="0 0 330 160" role="img" aria-label="입을 다문 칼"><use href="#k-closed"/></svg><figcaption>0.6초</figcaption></figure>
+    </div></div>
+    <div><h3>처치할 때</h3><div class="strip">
+      <figure><svg viewBox="0 0 330 160" role="img" aria-label="입을 벌린 칼"><use href="#k-open"/></svg><figcaption>적중</figcaption></figure>
+      <figure><div class="kwak">콱!</div><figcaption>처치 효과음</figcaption></figure>
+      <figure><svg viewBox="0 0 330 160" role="img" aria-label="입을 다문 칼"><use href="#k-closed"/></svg><figcaption>복귀</figcaption></figure>
+    </div></div>
+  </div>
+</div></section>
+
+<section class="band gray"><div class="w">
+  <h2>회색 총에 검은 상어 한 마리</h2>
+  <div class="decal"><svg viewBox="0 0 200 80" role="img" aria-label="흑상어 그래픽"><use href="#decal"/></svg></div>
+  <div class="swatch">
+    <span style="width:65%;background:#55646b;color:#fff">총 바탕 65</span>
+    <span style="width:25%;background:#10171c;color:#fff">상어 25</span>
+    <span style="width:10%;background:#f4eee0">배 10</span>
+  </div>
+</div></section>
+
+<section class="band fog" id="multi"><div class="w">
+  <h2>숫자를 고르고, 보급받기</h2>
+  <p class="steps">이용권 구매<i>→</i>숫자칸 선택<i>→</i>구성품 획득<i>→</i>유니크가 나오면 숫자판 초기화</p>
+  <div class="game">
+    <div class="board" id="board" aria-label="1번부터 100번까지 숫자판"></div>
+    <div>
+      <div class="count">
+        <div><b id="used">0</b><span>이용권</span></div>
+        <div><b id="spent">0</b><span>사용 금액(원)</span></div>
+        <div><b id="uniq">0</b><span>유니크</span></div>
+      </div>
+      <ul class="log" id="log" aria-live="polite"><li class="idle">숫자칸을 눌러 보세요.</li></ul>
+      <div class="btns"><button class="btn" id="auto" type="button">10칸 열기</button><button class="btn alt" id="reset" type="button">초기화</button></div>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" id="rate"><div class="w">
+  <h2>유니크는 100번에 3번도 안 나온다</h2>
+  <div class="rate"><p class="huge">2.80%</p><p>유니크 4종 합계<br>평균 약 36회에 1번</p></div>
+  <div class="line" role="img" aria-label="전체 중 유니크 2.80퍼센트"><span style="width:2.8%"></span></div>
+  <div class="scroll" id="dots" style="margin-top:44px"></div>
+  <p class="small" style="margin-top:10px">원 크기는 확률에 비례합니다. 모든 확률은 기획 가정치입니다.</p>
+</div></section>
+
+<section class="band fog" id="price"><div class="w">
+  <h2>10개씩 사면 10% 싸다</h2>
+  <div class="prices" id="prices"></div>
+  <div class="two">
+    <div><h3>뽑을수록 오르는 유니크 획득 확률</h3><div class="scroll" id="curve"></div></div>
+    <div><h3>목표별 평균 비용</h3><div id="cost"></div></div>
+  </div>
+  <p class="small" style="margin-top:16px">10개 묶음 단가 2,160원 기준입니다. 가격은 기획 가정치입니다.</p>
+</div></section>
+
+<section class="band" id="plan"><div class="w">
+  <h2>겨울방학 한가운데 4주 판매</h2>
+  <div class="scroll" id="gantt" style="margin-top:40px"></div>
+  <p class="small" style="margin-top:10px">일정은 기획 가정치입니다.</p>
+</div></section>
+
+<section class="band fog"><div class="w">
+  <h2>기준 시나리오 4주 매출 6.5억 원</h2>
+  <div class="money" id="money"></div>
+  <div class="cap" id="cap"></div>
+  <p class="small" style="margin-top:16px">내부 데이터 없이 세운 가정치입니다. 플랫폼 수수료 차감 전 금액입니다.</p>
+</div></section>
+
+<section class="band"><div class="w">
+  <h2>미리 막아야 할 네 가지</h2>
+  <div class="risk">
+    <div><b>이슈 연결 약화</b><span>홍보에 북항 흑상어 이야기 활용</span></div>
+    <div><b>이슈 관심 하락</b><span>출시 전 검색량 재점검</span></div>
+    <div><b>확률 불만</b><span>구성품별 확률 사전 공개</span></div>
+    <div><b>유사 스킨 등장</b><span>구르카 전용 연출로 차별화</span></div>
+  </div>
+</div></section>
+</main>
+
+<footer class="end"><div class="w"><p>Dusty Shark</p></div></footer>
+
+<script>
+(function(){
+var C={ink:'#10171c',sub:'#4c5960',rule:'#d6dfe2',hot:'#f4511e',hotD:'#b9340b',steel:'#6f7f86'};
+var ITEMS=[
+ {w:'윈체스터(IS)',s:'g-win',vb:'0 0 640 220',d:[[1,15],[3,8],[7,3],[100,.3,1]]},
+ {w:'AK47(IS)',s:'g-ak',vb:'0 0 640 220',d:[[1,15],[3,8],[15,2],[50,.5,1]]},
+ {w:'P90_v2(IS)',s:'g-p90',vb:'0 0 640 220',d:[[1,15],[3,8],[7,3],[30,1,1]]},
+ {w:'D.Eagle(S)',s:'g-de',vb:'0 0 640 220',d:[[3,10.2],[7,5]]},
+ {w:'Gurkha(L)',s:'k-open',vb:'0 0 330 160',d:[[3,5],[7,1,1]]}
+];
+var DAYS=[1,3,7,15,30,50,100];
+function $(i){return document.getElementById(i)}
+function num(n){return Math.round(n).toLocaleString('ko-KR')}
+function svg(w,h,b,l){return '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+l+'">'+b+'</svg>'}
+function t(x,y,s,o){o=o||{};return '<text x="'+x+'" y="'+y+'" font-size="'+(o.z||14)+'" font-weight="'+(o.w||500)+'" text-anchor="'+(o.a||'start')+'"'+(o.f?' style="fill:'+o.f+'"':'')+'>'+s+'</text>'}
+
+$('rack').innerHTML=ITEMS.map(function(it){
+  return '<article class="row"><b>'+it.w+'<span>Dusty Shark</span></b><svg viewBox="'+it.vb+'" role="img" aria-label="'+it.w+' 시안"><use href="#'+it.s+'"/></svg><p class="days">'+it.d.map(function(d){return d[2]?'<em>'+d[0]+'일</em>':d[0]+'일'}).join(' ')+'</p></article>';
+}).join('');
+
+(function(){
+  var W=680,H=350,L=8,R=8,T=30,B=104,max=38,x=function(d){return L+d/max*(W-L-R)},y=function(v){return H-B-v/100*(H-B-T)},b='';
+  b+='<path d="M'+x(0)+' '+y(0)+'L'+x(11)+' '+y(63)+'L'+x(20)+' '+y(100)+'V'+y(0)+'Z" fill="'+C.hot+'" fill-opacity=".16"/>';
+  b+='<path d="M'+x(0)+' '+y(0)+'L'+x(11)+' '+y(63)+'L'+x(20)+' '+y(100)+'" fill="none" stroke="'+C.hot+'" stroke-width="5" stroke-linejoin="round"/>';
+  b+='<circle cx="'+x(11)+'" cy="'+y(63)+'" r="7" fill="'+C.ink+'"/><circle cx="'+x(20)+'" cy="'+y(100)+'" r="7" fill="'+C.ink+'"/>';
+  b+=t(x(11)-14,y(63)-8,'63만',{a:'end',z:22,w:800})+t(x(20)+14,y(100)+8,'100만+',{z:22,w:800});
+  b+='<path d="M'+L+' '+y(0)+'H'+(W-R)+'" stroke="'+C.ink+'" stroke-width="2"/>';
+  [[0,'9/18','첫 발견'],[11,'9/29','63만 명'],[20,'10/8','부캉이 소주'],[26,'10/14','키링·인형'],[38,'10/26','이모티콘']].forEach(function(e,i,a){var an=i===0?'start':i===a.length-1?'end':'middle';b+='<path d="M'+x(e[0])+' '+y(0)+'v10" stroke="'+C.ink+'" stroke-width="2"/>'+t(x(e[0]),y(0)+34,e[1],{a:an,z:15,w:800})+t(x(e[0]),y(0)+56,e[2],{a:an,z:14,f:C.sub})});
+  $('visit').innerHTML=svg(W,H-40,b,'9월 18일 발견 후 10월 8일 방문객 100만 명 돌파');
+})();
+
+var flat=[];ITEMS.forEach(function(it){it.d.forEach(function(d){flat.push({w:it.w,day:d[0],p:d[1],u:!!d[2]})})});
+function pick(){var r=Math.random()*100,a=0;for(var i=0;i<flat.length;i++){a+=flat[i].p;if(r<a)return flat[i]}return flat[flat.length-1]}
+var used=0,uniq=0,lock=false,board=$('board'),lines=[];
+function build(){var h='';for(var i=1;i<=100;i++)h+='<button class="cell" type="button" data-n="'+i+'" aria-label="'+i+'번 칸">'+i+'</button>';board.innerHTML=h}
+function show(){$('used').textContent=used;$('spent').textContent=num(used*2160);$('uniq').textContent=uniq;$('log').innerHTML=lines.length?lines.slice(-5).map(function(l){return '<li'+(l.u?' class="hit"':'')+'>'+l.s+'</li>'}).join(''):'<li class="idle">숫자칸을 눌러 보세요.</li>'}
+function open(c){
+  if(lock||c.disabled)return;
+  var r=pick();used++;c.disabled=true;c.textContent=r.day+'일';c.setAttribute('aria-label',c.dataset.n+'번 칸: '+r.w+' '+r.day+'일');
+  lines.push({s:(r.u?'유니크! ':'')+r.w+' '+r.day+'일',u:r.u});
+  if(r.u){uniq++;c.classList.add('u');lock=true;setTimeout(function(){build();lock=false},1300)}
+  else{if(r.day>=7)c.classList.add('r');if(!board.querySelector('.cell:not(:disabled)')){lock=true;setTimeout(function(){build();lock=false},900)}}
+  show();
+}
+build();show();
+board.addEventListener('click',function(e){var c=e.target.closest('.cell');if(c)open(c)});
+$('auto').addEventListener('click',function(){for(var i=0;i<10&&!lock;i++){var c=board.querySelector('.cell:not(:disabled)');if(!c)break;open(c)}});
+$('reset').addEventListener('click',function(){used=0;uniq=0;lines=[];lock=false;build();show()});
+
+(function(){
+  var L=150,cw=104,rh=84,T=34,W=L+cw*7+84,H=T+rh*ITEMS.length+46,b='',tot={};
+  DAYS.forEach(function(d,i){b+=t(L+cw*i+cw/2,20,d+'일',{a:'middle',z:15,w:800})});b+=t(W,20,'합계',{a:'end',z:15,w:800});
+  ITEMS.forEach(function(it,r){var cy=T+rh*r+rh/2,sum=0;b+='<path d="M0 '+(T+rh*r)+'H'+W+'" stroke="'+C.rule+'"/>'+t(0,cy+5,it.w,{z:15,w:800});
+    DAYS.forEach(function(d,i){var f=it.d.filter(function(x){return x[0]===d})[0];if(!f)return;sum+=f[1];tot[d]=(tot[d]||0)+f[1];var cx=L+cw*i+cw/2,rad=Math.sqrt(f[1])*9.4,big=rad>=24;
+      b+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rad.toFixed(1)+'" fill="'+(f[2]?C.hot:C.ink)+'"/>';
+      b+=big?t(cx,cy+5,f[1].toFixed(f[1]%1?1:0)+'%',{a:'middle',z:14,w:800,f:'#fff'}):t(cx,cy+rad+15,f[1].toFixed(f[1]%1?1:0)+'%',{a:'middle',z:13,w:800,f:f[2]?C.hotD:C.ink})});
+    b+=t(W,cy+5,sum.toFixed(1)+'%',{a:'end',z:15,w:800})});
+  var fy=T+rh*ITEMS.length;b+='<path d="M0 '+fy+'H'+W+'" stroke="'+C.ink+'" stroke-width="2"/>'+t(0,fy+28,'합계',{z:15,w:800});
+  DAYS.forEach(function(d,i){b+=t(L+cw*i+cw/2,fy+28,tot[d].toFixed(1)+'%',{a:'middle',z:14,w:800})});b+=t(W,fy+28,'100%',{a:'end',z:15,w:800,f:C.hotD});
+  $('dots').innerHTML=svg(W,H,b,'무기와 기간별 확률 표');
+})();
+
+$('prices').innerHTML=[[1,2400,''],[5,11400,'5% 할인'],[10,21600,'10% 할인']].map(function(p,i){return '<div class="price'+(i===2?' top':'')+'"><span>이용권 '+p[0]+'개</span><b>'+num(p[1])+'</b><span>개당 '+num(p[1]/p[0])+'원'+(p[2]?' · '+p[2]:'')+'</span></div>'}).join('');
+
+(function(){
+  var W=640,H=310,L=44,R=16,T=20,B=38,x=function(n){return L+n/100*(W-L-R)},y=function(p){return H-B-p/100*(H-B-T)},f=function(n){return (1-Math.pow(.972,n))*100},b='',d='',n;
+  [0,50,100].forEach(function(v){b+='<path d="M'+L+' '+y(v)+'H'+(W-R)+'" stroke="'+(v?C.rule:C.ink)+'" stroke-width="'+(v?1:2)+'"/>'+t(L-8,y(v)+5,v+'%',{a:'end',z:13,f:C.sub})});
+  for(n=0;n<=100;n+=2)d+=(n?'L':'M')+x(n).toFixed(1)+' '+y(f(n)).toFixed(1);
+  b+='<path d="'+d+'" fill="none" stroke="'+C.hot+'" stroke-width="5" stroke-linecap="round"/>';
+  [[10,14,22],[36,14,24],[100,-6,30]].forEach(function(k){var v=f(k[0]);b+='<circle cx="'+x(k[0])+'" cy="'+y(v)+'" r="7" fill="'+C.ink+'"/>'+t(x(k[0])+k[1],y(v)+k[2],k[0]+'회 '+v.toFixed(1)+'%',{a:k[0]===100?'end':'start',z:16,w:800})+t(x(k[0]),H-12,k[0]+'회',{a:k[0]===100?'end':'middle',z:13,f:C.sub})});
+  $('curve').innerHTML=svg(W,H,b,'보급 횟수별 유니크 획득 확률');
+  var rows=[['유니크 아무거나',2.8],['P90_v2 30일',1],['구르카 7일',1],['AK47 50일',.5],['윈체스터 100일',.3]],mx=100/.3*2160,W2=460,H2=rows.length*58,b2='';
+  rows.forEach(function(r,i){var c=100/r[1]*2160,w=Math.max(6,c/mx*350),y0=i*58;b2+=t(0,y0+15,r[0],{z:15,w:700})+'<rect y="'+(y0+24)+'" width="'+w+'" height="18" fill="'+(i?C.ink:C.hot)+'"/>'+t(w+8,y0+40,(c/10000).toFixed(1)+'만 원',{z:15,w:800})});
+  $('cost').innerHTML=svg(W2,H2,b2,'목표 보상별 평균 비용');
+})();
+
+(function(){
+  var s=new Date(2026,10,19),e=new Date(2027,1,4),span=(e-s)/864e5,W=1160,L=210,R=8,T=46,rh=50,x=function(a){return L+(new Date(a[0],a[1],a[2])-s)/864e5/span*(W-L-R)};
+  var rows=[['상표·유사 디자인 검토',[2026,10,19],[2026,11,3],C.steel],['스킨 디자인',[2026,10,26],[2026,11,10],C.steel],['모델링·연출 제작',[2026,11,3],[2026,11,24],C.steel],['QA·확률 검수',[2026,11,24],[2027,0,6],C.steel],['사전 홍보',[2026,11,31],[2027,0,7],C.ink],['판매',[2027,0,7],[2027,1,4],C.hot]],H=T+rows.length*rh+6,b='';
+  [[[2026,10,19],'11/19'],[[2026,11,3],'12/3'],[[2026,11,17],'12/17'],[[2026,11,31],'12/31'],[[2027,0,14],'1/14'],[[2027,0,28],'1/28']].forEach(function(g){var gx=x(g[0]);b+='<path d="M'+gx+' '+(T-10)+'V'+H+'" stroke="'+C.rule+'"/>'+t(gx,22,g[1],{a:'middle',z:15,w:700,f:C.sub})});
+  rows.forEach(function(r,i){var a=x(r[1]),c=x(r[2]),yy=T+i*rh;b+=t(0,yy+25,r[0],{z:17,w:i===5?800:700})+'<rect x="'+a+'" y="'+(yy+6)+'" width="'+(c-a)+'" height="30" fill="'+r[3]+'"/>'});
+  $('gantt').innerHTML=svg(W,H,b,'2026년 11월 19일부터 2027년 2월 4일까지 일정');
+})();
+
+(function(){
+  var r=[['보수',8000,1],['기준',15000,2],['공격',25000,3]],vals=r.map(function(q){return q[1]*q[2]*21600/1e8}),m=Math.max.apply(null,vals);
+  $('money').innerHTML=r.map(function(q,i){return '<div class="col'+(i===1?' top':'')+'"><b>'+vals[i].toFixed(1)+'억</b><i style="height:'+(vals[i]/m*78).toFixed(1)+'%"></i></div>'}).join('');
+  $('cap').innerHTML=r.map(function(q){return '<div><b>'+q[0]+'</b><span>'+num(q[1])+'명 · 10개 '+q[2]+'묶음</span></div>'}).join('');
+})();
+})();
+</script>
