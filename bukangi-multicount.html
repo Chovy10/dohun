@@ -45,6 +45,8 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hot-d);outline-offs
 .hero .meta{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 32px;margin-top:18px}
 .hero .meta p:first-child{font-size:clamp(20px,2.6vw,30px);font-weight:800;letter-spacing:-.03em}
 .hero .date{font:600 clamp(22px,2.6vw,32px) var(--en)}
+.fee{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 28px;margin-top:18px;padding-top:16px;border-top:2px solid var(--ink);font-size:15px;font-weight:700}
+.fee b{margin-left:8px;font:800 clamp(28px,3.4vw,42px)/1 var(--en);color:var(--hot-d)}
 
 .issue{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(28px,5vw,72px);align-items:end;margin-top:44px}
 .huge{font:800 clamp(110px,17vw,220px)/.84 var(--en);color:var(--hot)}
@@ -89,7 +91,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hot-d);outline-offs
 .cell:disabled{cursor:default;background:var(--fog2);color:var(--ink)}
 .cell.r:disabled{background:var(--ink);color:var(--white)}
 .cell.u:disabled{background:var(--hot);color:var(--ink)}
-.count{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding-bottom:16px;border-bottom:2px solid var(--ink)}
+.cell.me:disabled{box-shadow:inset 0 0 0 3px var(--hot)}
+.cell.u.me:disabled{box-shadow:inset 0 0 0 3px var(--ink)}
+.shared{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px;margin-bottom:16px;font-weight:800}
+.shared b{font:800 clamp(30px,3.2vw,42px)/1 var(--en);color:var(--hot-d)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.count{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 32px;padding-bottom:16px;border-bottom:2px solid var(--ink)}
 .count b{display:block;font:800 clamp(30px,3.2vw,42px)/1 var(--en)}
 .count span{font-size:12px;color:var(--sub);font-weight:700}
 .log{list-style:none;margin:0;padding:0;min-height:176px;font-size:14px}
@@ -182,6 +189,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hot-d);outline-offs
     <p>서든어택 흑상어 스킨 무기 5종</p>
     <p class="date">2027.01.07 — 02.04</p>
   </div>
+  <p class="fee"><span>이용권 1개<b>2,400원</b></span><span>5개<b>11,400원</b></span><span>10개<b>21,600원</b></span></p>
 </div></section>
 
 <section class="band" id="issue"><div class="w">
@@ -256,18 +264,21 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--hot-d);outline-offs
 </div></section>
 
 <section class="band fog" id="multi"><div class="w">
-  <h2>숫자를 고르고, 보급받기</h2>
-  <p class="steps">이용권 구매<i>→</i>숫자칸 선택<i>→</i>구성품 획득<i>→</i>유니크가 나오면 숫자판 초기화</p>
+  <h2>모두가 함께 여는 숫자판</h2>
+  <p class="steps">이용권 구매<i>→</i>숫자칸 선택<i>→</i>구성품 획득<i>→</i>누구든 유니크를 뽑으면 모두의 숫자판 초기화</p>
   <div class="game">
     <div class="board" id="board" aria-label="1번부터 100번까지 숫자판"></div>
     <div>
+      <p class="shared"><span>전체 유저가 연 칸</span><span><b id="opened">0</b> / 100</span></p>
       <div class="count">
-        <div><b id="used">0</b><span>이용권</span></div>
-        <div><b id="spent">0</b><span>사용 금액(원)</span></div>
-        <div><b id="uniq">0</b><span>유니크</span></div>
+        <div><b id="used">0</b><span>내 이용권</span></div>
+        <div><b id="spent">0</b><span>내 사용 금액(원)</span></div>
+        <div><b id="uniq">0</b><span>내 유니크</span></div>
       </div>
-      <ul class="log" id="log" aria-live="polite"><li class="idle">숫자칸을 눌러 보세요.</li></ul>
-      <div class="btns"><button class="btn" id="auto" type="button">10칸 열기</button><button class="btn alt" id="reset" type="button">초기화</button></div>
+      <ul class="log" id="log"></ul>
+      <p class="sr" id="live" aria-live="polite"></p>
+      <div class="btns"><button class="btn" id="auto" type="button">10칸 열기</button><button class="btn alt" id="reset" type="button">처음부터</button></div>
+      <p class="small" style="margin-top:10px">테두리가 있는 칸이 내가 연 칸입니다. 다른 유저의 뽑기는 시연용 모의 동작입니다.</p>
     </div>
   </div>
 </div></section>
@@ -349,21 +360,33 @@ $('rack').innerHTML=ITEMS.map(function(it){
 
 var flat=[];ITEMS.forEach(function(it){it.d.forEach(function(d){flat.push({w:it.w,day:d[0],p:d[1],u:!!d[2]})})});
 function pick(){var r=Math.random()*100,a=0;for(var i=0;i<flat.length;i++){a+=flat[i].p;if(r<a)return flat[i]}return flat[flat.length-1]}
-var used=0,uniq=0,lock=false,board=$('board'),lines=[];
+/* 숫자판은 전체 유저 공용, 이용권·금액·유니크는 내 것만 센다. 다른 유저는 시연용 모의 동작 */
+var used=0,uniq=0,lock=false,timer=0,seen=false,board=$('board'),lines=[];
+function free(){return board.querySelectorAll('.cell:not(:disabled)')}
+function any(list){return list[Math.floor(Math.random()*list.length)]}
 function build(){var h='';for(var i=1;i<=100;i++)h+='<button class="cell" type="button" data-n="'+i+'" aria-label="'+i+'번 칸">'+i+'</button>';board.innerHTML=h}
-function show(){$('used').textContent=used;$('spent').textContent=num(used*2160);$('uniq').textContent=uniq;$('log').innerHTML=lines.length?lines.slice(-5).map(function(l){return '<li'+(l.u?' class="hit"':'')+'>'+l.s+'</li>'}).join(''):'<li class="idle">숫자칸을 눌러 보세요.</li>'}
-function open(c){
+function fill(c,r,me){c.disabled=true;c.textContent=r.day+'일';c.setAttribute('aria-label',c.dataset.n+'번 칸: '+(me?'내가 연 ':'')+r.w+' '+r.day+'일');if(me)c.classList.add('me');if(r.u)c.classList.add('u');else if(r.day>=7)c.classList.add('r')}
+function show(){$('opened').textContent=100-free().length;$('used').textContent=used;$('spent').textContent=num(used*2160);$('uniq').textContent=uniq;$('log').innerHTML=lines.length?lines.slice(-5).map(function(l){return '<li'+(l.u?' class="hit"':'')+'>'+l.s+'</li>'}).join(''):'<li class="idle">숫자칸을 눌러 보세요.</li>'}
+function open(c,who){
   if(lock||c.disabled)return;
-  var r=pick();used++;c.disabled=true;c.textContent=r.day+'일';c.setAttribute('aria-label',c.dataset.n+'번 칸: '+r.w+' '+r.day+'일');
-  lines.push({s:(r.u?'유니크! ':'')+r.w+' '+r.day+'일',u:r.u});
-  if(r.u){uniq++;c.classList.add('u');lock=true;setTimeout(function(){build();lock=false},1300)}
-  else{if(r.day>=7)c.classList.add('r');if(!board.querySelector('.cell:not(:disabled)')){lock=true;setTimeout(function(){build();lock=false},900)}}
+  var me=!who,r=pick(),s=(r.u?'유니크! ':'')+(who||'나')+' · '+r.w+' '+r.day+'일';
+  fill(c,r,me);if(me){used++;if(r.u)uniq++}
+  lines.push({s:s,u:r.u});
+  if(me||r.u)$('live').textContent=s+(r.u?'. 숫자판이 초기화됩니다.':'');
+  if(r.u||!free().length){lock=true;timer=setTimeout(function(){build();lines.push({s:'숫자판이 초기화됐습니다',u:false});lock=false;show()},1500)}
   show();
 }
-build();show();
+function start(){
+  clearTimeout(timer);used=0;uniq=0;lines=[];lock=false;$('live').textContent='';build();
+  for(var i=0;i<17;i++){var r;do{r=pick()}while(r.u);fill(any(free()),r,false)}
+  show();
+}
+start();
 board.addEventListener('click',function(e){var c=e.target.closest('.cell');if(c)open(c)});
-$('auto').addEventListener('click',function(){for(var i=0;i<10&&!lock;i++){var c=board.querySelector('.cell:not(:disabled)');if(!c)break;open(c)}});
-$('reset').addEventListener('click',function(){used=0;uniq=0;lines=[];lock=false;build();show()});
+$('auto').addEventListener('click',function(){for(var i=0;i<10&&!lock;i++){var c=free()[0];if(!c)break;open(c)}});
+$('reset').addEventListener('click',start);
+if('IntersectionObserver' in window)new IntersectionObserver(function(e){seen=e[e.length-1].isIntersecting}).observe(board);else seen=true;
+setInterval(function(){if(!seen||lock||document.hidden)return;var c=any(free());if(c)open(c,'유저 '+any(['A','B','C','D','E']))},1800);
 
 (function(){
   var L=150,cw=104,rh=84,T=34,W=L+cw*7+84,H=T+rh*ITEMS.length+46,b='',tot={};
